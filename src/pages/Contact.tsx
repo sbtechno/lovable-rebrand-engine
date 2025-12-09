@@ -6,14 +6,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Phone, Mail, MapPin, Clock, Send, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Contact = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    phone: "",
     subject: "",
     message: "",
   });
@@ -29,41 +30,66 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const { error } = await supabase.from("contacts").insert({
+        nom: formData.name,
+        email: formData.email,
+        sujet: formData.subject,
+        message: formData.message,
+      });
 
-    toast({
-      title: "Message envoyé !",
-      description: "Nous vous répondrons dans les plus brefs délais.",
-    });
+      if (error) {
+        console.error("Erreur d'envoi:", error);
+        toast({
+          title: "Erreur",
+          description: "Une erreur s'est produite lors de l'envoi. Veuillez réessayer.",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
 
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      subject: "",
-      message: "",
-    });
-    setIsSubmitting(false);
+      toast({
+        title: "Message envoyé !",
+        description: "Nous vous répondrons dans les plus brefs délais.",
+      });
+
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+      setIsSuccess(true);
+      setIsSubmitting(false);
+    } catch (error) {
+      console.error("Erreur:", error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur s'est produite. Veuillez réessayer.",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+    }
   };
 
   const contactInfo = [
     {
       icon: Phone,
       title: "Téléphone",
-      content: "+509 33 27 6379",
-      href: "tel:+50933276379",
+      content: "+509 4730 8207 / 4248 7444 / 3327 6379",
+      href: "tel:+50947308207",
     },
     {
       icon: Mail,
       title: "Email",
-      content: "contact@lovable.edu",
-      href: "mailto:contact@lovable.edu",
+      content: "contact@ecehaiti.com",
+      href: "mailto:contact@ecehaiti.com",
     },
     {
       icon: MapPin,
       title: "Adresse",
-      content: "Port-de-Paix, Haïti",
+      content: "Port-de-Paix, Haïti\n48, angles des rues Benito Sylvain & Boisrond Tonnerre",
       href: "#",
     },
     {
@@ -122,7 +148,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold text-foreground">{info.title}</h3>
-                      <p className="text-muted-foreground">{info.content}</p>
+                      <p className="text-muted-foreground whitespace-pre-line">{info.content}</p>
                     </div>
                   </a>
                 ))}
@@ -132,89 +158,95 @@ const Contact = () => {
             {/* Contact Form */}
             <div className="lg:col-span-2 animate-slide-in-right">
               <div className="bg-card rounded-3xl border border-border p-8 md:p-12">
-                <h2 className="text-2xl font-display font-bold text-foreground mb-6">
-                  Envoyez-nous un message
-                </h2>
-
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Nom complet *</Label>
-                      <Input
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        placeholder="Votre nom"
-                        required
-                      />
+                {isSuccess ? (
+                  <div className="text-center py-12 space-y-6">
+                    <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto">
+                      <CheckCircle className="h-10 w-10 text-primary-foreground" />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email *</Label>
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        placeholder="votre@email.com"
-                        required
-                      />
-                    </div>
+                    <h2 className="text-2xl font-display font-bold text-foreground">
+                      Message envoyé !
+                    </h2>
+                    <p className="text-muted-foreground max-w-md mx-auto">
+                      Merci pour votre message. Nous vous répondrons dans les plus brefs délais.
+                    </p>
+                    <Button onClick={() => setIsSuccess(false)} variant="outline">
+                      Envoyer un autre message
+                    </Button>
                   </div>
+                ) : (
+                  <>
+                    <h2 className="text-2xl font-display font-bold text-foreground mb-6">
+                      Envoyez-nous un message
+                    </h2>
 
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Téléphone</Label>
-                      <Input
-                        id="phone"
-                        name="phone"
-                        type="tel"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        placeholder="+509 XX XX XXXX"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="subject">Sujet *</Label>
-                      <Input
-                        id="subject"
-                        name="subject"
-                        value={formData.subject}
-                        onChange={handleChange}
-                        placeholder="Sujet de votre message"
-                        required
-                      />
-                    </div>
-                  </div>
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="name">Nom complet *</Label>
+                          <Input
+                            id="name"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            placeholder="Votre nom"
+                            required
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="email">Email *</Label>
+                          <Input
+                            id="email"
+                            name="email"
+                            type="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            placeholder="votre@email.com"
+                            required
+                          />
+                        </div>
+                      </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="message">Message *</Label>
-                    <Textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      placeholder="Votre message..."
-                      rows={6}
-                      required
-                    />
-                  </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="subject">Sujet *</Label>
+                        <Input
+                          id="subject"
+                          name="subject"
+                          value={formData.subject}
+                          onChange={handleChange}
+                          placeholder="Sujet de votre message"
+                          required
+                        />
+                      </div>
 
-                  <Button type="submit" size="lg" disabled={isSubmitting} className="w-full md:w-auto">
-                    {isSubmitting ? (
-                      <>
-                        <span className="animate-spin mr-2">⏳</span>
-                        Envoi en cours...
-                      </>
-                    ) : (
-                      <>
-                        <Send className="h-4 w-4 mr-2" />
-                        Envoyer le message
-                      </>
-                    )}
-                  </Button>
-                </form>
+                      <div className="space-y-2">
+                        <Label htmlFor="message">Message *</Label>
+                        <Textarea
+                          id="message"
+                          name="message"
+                          value={formData.message}
+                          onChange={handleChange}
+                          placeholder="Votre message..."
+                          rows={6}
+                          required
+                        />
+                      </div>
+
+                      <Button type="submit" size="lg" disabled={isSubmitting} className="w-full md:w-auto">
+                        {isSubmitting ? (
+                          <>
+                            <span className="animate-spin mr-2">⏳</span>
+                            Envoi en cours...
+                          </>
+                        ) : (
+                          <>
+                            <Send className="h-4 w-4 mr-2" />
+                            Envoyer le message
+                          </>
+                        )}
+                      </Button>
+                    </form>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -226,14 +258,16 @@ const Contact = () => {
         <div className="container">
           <div className="bg-card rounded-3xl overflow-hidden border border-border animate-fade-in">
             <div className="aspect-video bg-muted flex items-center justify-center">
-              <div className="text-center p-8">
-                <MapPin className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-xl font-display font-semibold text-foreground mb-2">Notre emplacement</h3>
-                <p className="text-muted-foreground">Port-de-Paix, Haïti</p>
-                <p className="text-sm text-muted-foreground mt-2">
-                  (Carte interactive disponible après connexion à Lovable Cloud)
-                </p>
-              </div>
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3760.8!2d-72.8333!3d19.9333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sPort-de-Paix%2C%20Haiti!5e0!3m2!1sen!2sus!4v1234567890"
+                width="100%"
+                height="100%"
+                style={{ border: 0, minHeight: "400px" }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="ECE Haiti Location"
+              />
             </div>
           </div>
         </div>

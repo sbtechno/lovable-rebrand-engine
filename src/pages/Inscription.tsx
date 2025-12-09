@@ -7,13 +7,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { GraduationCap, CheckCircle, ArrowRight, User, Mail, Phone, Calendar, BookOpen } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const programs = [
-  { value: "licence-l3", label: "Licence L3 en Sciences du Management et de l'Entreprise" },
-  { value: "certification-bac", label: "Programme de Certification (Niveau Baccalauréat)" },
-  { value: "mba", label: "MBA (Master en Business Administration)" },
-  { value: "certification-postgrade", label: "Programme de Certification Postgradué" },
-  { value: "business-class", label: "Business Class Certified" },
+  { value: "business-administration", label: "Business Administration" },
+  { value: "comptabilite", label: "Comptabilité" },
+  { value: "entrepreneuriat", label: "Entrepreneuriat" },
+  { value: "gestion-secretariat", label: "Gestion du Secrétariat" },
+  { value: "ressources-humaines", label: "Gestion des Ressources Humaines" },
+  { value: "management-information", label: "Management de l'Information" },
+  { value: "marketing-vente", label: "Marketing de Vente" },
 ];
 
 const Inscription = () => {
@@ -26,8 +29,8 @@ const Inscription = () => {
     email: "",
     phone: "",
     dateOfBirth: "",
+    birthPlace: "",
     address: "",
-    city: "",
     program: "",
     previousEducation: "",
     acceptTerms: false,
@@ -52,16 +55,46 @@ const Inscription = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      const { error } = await supabase.from("inscriptions").insert({
+        nom: formData.lastName,
+        prenom: formData.firstName,
+        email: formData.email,
+        telephone: formData.phone,
+        date_naissance: formData.dateOfBirth || null,
+        lieu_naissance: formData.birthPlace || null,
+        adresse: formData.address || null,
+        programme: formData.program,
+        niveau_etude: formData.previousEducation || null,
+      });
 
-    toast({
-      title: "Inscription réussie !",
-      description: "Votre demande d'inscription a été envoyée. Nous vous contacterons prochainement.",
-    });
+      if (error) {
+        console.error("Erreur d'inscription:", error);
+        toast({
+          title: "Erreur",
+          description: "Une erreur s'est produite lors de l'inscription. Veuillez réessayer.",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
 
-    setIsSubmitting(false);
-    setStep(3);
+      toast({
+        title: "Inscription réussie !",
+        description: "Votre demande d'inscription a été envoyée. Nous vous contacterons prochainement.",
+      });
+
+      setIsSubmitting(false);
+      setStep(3);
+    } catch (error) {
+      console.error("Erreur:", error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur s'est produite. Veuillez réessayer.",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+    }
   };
 
   const nextStep = () => {
@@ -206,7 +239,7 @@ const Inscription = () => {
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="dateOfBirth">Date de naissance *</Label>
+                    <Label htmlFor="dateOfBirth">Date de naissance</Label>
                     <div className="relative">
                       <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
@@ -216,19 +249,17 @@ const Inscription = () => {
                         value={formData.dateOfBirth}
                         onChange={handleChange}
                         className="pl-10"
-                        required
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="city">Ville *</Label>
+                    <Label htmlFor="birthPlace">Lieu de naissance</Label>
                     <Input
-                      id="city"
-                      name="city"
-                      value={formData.city}
+                      id="birthPlace"
+                      name="birthPlace"
+                      value={formData.birthPlace}
                       onChange={handleChange}
-                      placeholder="Votre ville"
-                      required
+                      placeholder="Votre lieu de naissance"
                     />
                   </div>
                 </div>
@@ -321,7 +352,7 @@ const Inscription = () => {
                   <Button type="button" variant="outline" onClick={prevStep}>
                     Retour
                   </Button>
-                  <Button type="submit" size="lg" disabled={isSubmitting || !formData.acceptTerms}>
+                  <Button type="submit" size="lg" disabled={isSubmitting || !formData.acceptTerms || !formData.program}>
                     {isSubmitting ? (
                       <>
                         <span className="animate-spin mr-2">⏳</span>
