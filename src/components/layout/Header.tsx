@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Menu, X, Phone, Mail, Clock, Facebook, Instagram, Linkedin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import eceLogo from "@/assets/ece-logo.jpeg";
+import eceLogo from "@/assets/ece-logo-transparent.png";
 
 const navigation = [
   { name: "Accueil", href: "/" },
@@ -64,13 +64,13 @@ export function Header() {
 
       {/* Main navigation */}
       <nav className="bg-card/95 backdrop-blur-md shadow-md">
-        <div className="container flex items-center justify-between py-3">
+        <div className="container flex items-center justify-between py-2">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3">
+          <Link to="/" className="flex items-center">
             <img 
               src={eceLogo} 
               alt="ECE - École de Commerce et d'Entrepreneuriat" 
-              className="h-14 w-auto object-contain"
+              className="h-16 md:h-20 w-auto object-contain"
             />
           </Link>
 
