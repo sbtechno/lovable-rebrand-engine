@@ -7,11 +7,20 @@ import { Label } from "@/components/ui/label";
 import { Phone, Mail, MapPin, Clock, Send, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { z } from "zod";
+
+const contactSchema = z.object({
+  name: z.string().trim().min(1, "Le nom est requis").max(100, "Le nom ne peut pas dépasser 100 caractères"),
+  email: z.string().trim().email("Adresse email invalide").max(255, "L'email ne peut pas dépasser 255 caractères"),
+  subject: z.string().trim().min(1, "Le sujet est requis").max(200, "Le sujet ne peut pas dépasser 200 caractères"),
+  message: z.string().trim().min(1, "Le message est requis").max(2000, "Le message ne peut pas dépasser 2000 caractères"),
+});
 
 const Contact = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -20,26 +29,51 @@ const Contact = () => {
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setErrors({});
+
+    // Validate form data
+    const result = contactSchema.safeParse(formData);
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.errors.forEach((err) => {
+        if (err.path[0]) {
+          fieldErrors[err.path[0] as string] = err.message;
+        }
+      });
+      setErrors(fieldErrors);
+      setIsSubmitting(false);
+      toast({
+        title: "Erreur de validation",
+        description: "Veuillez corriger les erreurs dans le formulaire.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     try {
+      const validatedData = result.data;
       const { error } = await supabase.from("contacts").insert({
-        nom: formData.name,
-        email: formData.email,
-        sujet: formData.subject,
-        message: formData.message,
+        nom: validatedData.name,
+        email: validatedData.email,
+        sujet: validatedData.subject,
+        message: validatedData.message,
       });
 
       if (error) {
-        console.error("Erreur d'envoi:", error);
         toast({
           title: "Erreur",
           description: "Une erreur s'est produite lors de l'envoi. Veuillez réessayer.",
@@ -62,8 +96,7 @@ const Contact = () => {
       });
       setIsSuccess(true);
       setIsSubmitting(false);
-    } catch (error) {
-      console.error("Erreur:", error);
+    } catch {
       toast({
         title: "Erreur",
         description: "Une erreur s'est produite. Veuillez réessayer.",
@@ -189,8 +222,10 @@ const Contact = () => {
                             value={formData.name}
                             onChange={handleChange}
                             placeholder="Votre nom"
+                            maxLength={100}
                             required
                           />
+                          {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="email">Email *</Label>
@@ -201,8 +236,10 @@ const Contact = () => {
                             value={formData.email}
                             onChange={handleChange}
                             placeholder="votre@email.com"
+                            maxLength={255}
                             required
                           />
+                          {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
                         </div>
                       </div>
 
@@ -214,8 +251,10 @@ const Contact = () => {
                           value={formData.subject}
                           onChange={handleChange}
                           placeholder="Sujet de votre message"
+                          maxLength={200}
                           required
                         />
+                        {errors.subject && <p className="text-sm text-destructive">{errors.subject}</p>}
                       </div>
 
                       <div className="space-y-2">
@@ -227,8 +266,10 @@ const Contact = () => {
                           onChange={handleChange}
                           placeholder="Votre message..."
                           rows={6}
+                          maxLength={2000}
                           required
                         />
+                        {errors.message && <p className="text-sm text-destructive">{errors.message}</p>}
                       </div>
 
                       <Button type="submit" size="lg" disabled={isSubmitting} className="w-full md:w-auto">

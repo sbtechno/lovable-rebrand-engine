@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 const AdminLayout = () => {
   const navigate = useNavigate();
@@ -23,8 +24,11 @@ const AdminLayout = () => {
   useEffect(() => {
     if (!loading && !user) {
       navigate('/auth');
+    } else if (!loading && user && !isAdmin) {
+      toast.error('Accès réservé aux administrateurs');
+      navigate('/');
     }
-  }, [user, loading, navigate]);
+  }, [user, isAdmin, loading, navigate]);
 
   const handleSignOut = async () => {
     await signOut();
