@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { GraduationCap, CheckCircle, ArrowRight, User, Mail, Phone, Calendar, BookOpen } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { z } from "zod";
 
 const programs = [
   { value: "business-administration", label: "Business Administration" },
@@ -19,10 +20,24 @@ const programs = [
   { value: "marketing-vente", label: "Marketing de Vente" },
 ];
 
+const inscriptionSchema = z.object({
+  firstName: z.string().trim().min(1, "Le prénom est requis").max(50, "Le prénom ne peut pas dépasser 50 caractères"),
+  lastName: z.string().trim().min(1, "Le nom est requis").max(50, "Le nom ne peut pas dépasser 50 caractères"),
+  email: z.string().trim().email("Adresse email invalide").max(255, "L'email ne peut pas dépasser 255 caractères"),
+  phone: z.string().trim().min(1, "Le téléphone est requis").max(20, "Le numéro ne peut pas dépasser 20 caractères").regex(/^[+]?[0-9\s-]+$/, "Format de téléphone invalide"),
+  dateOfBirth: z.string().optional(),
+  birthPlace: z.string().max(100, "Le lieu de naissance ne peut pas dépasser 100 caractères").optional(),
+  address: z.string().max(200, "L'adresse ne peut pas dépasser 200 caractères").optional(),
+  program: z.string().min(1, "Veuillez sélectionner un programme"),
+  previousEducation: z.string().optional(),
+  acceptTerms: z.literal(true, { errorMap: () => ({ message: "Vous devez accepter les conditions" }) }),
+});
+
 const Inscription = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState(1);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -42,6 +57,9 @@ const Inscription = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleSelectChange = (name: string, value: string) => {
@@ -49,27 +67,50 @@ const Inscription = () => {
       ...prev,
       [name]: value,
     }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setErrors({});
+
+    // Validate form data
+    const result = inscriptionSchema.safeParse(formData);
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.errors.forEach((err) => {
+        if (err.path[0]) {
+          fieldErrors[err.path[0] as string] = err.message;
+        }
+      });
+      setErrors(fieldErrors);
+      setIsSubmitting(false);
+      toast({
+        title: "Erreur de validation",
+        description: "Veuillez corriger les erreurs dans le formulaire.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     try {
+      const validatedData = result.data;
       const { error } = await supabase.from("inscriptions").insert({
-        nom: formData.lastName,
-        prenom: formData.firstName,
-        email: formData.email,
-        telephone: formData.phone,
-        date_naissance: formData.dateOfBirth || null,
-        lieu_naissance: formData.birthPlace || null,
-        adresse: formData.address || null,
-        programme: formData.program,
-        niveau_etude: formData.previousEducation || null,
+        nom: validatedData.lastName,
+        prenom: validatedData.firstName,
+        email: validatedData.email,
+        telephone: validatedData.phone,
+        date_naissance: validatedData.dateOfBirth || null,
+        lieu_naissance: validatedData.birthPlace || null,
+        adresse: validatedData.address || null,
+        programme: validatedData.program,
+        niveau_etude: validatedData.previousEducation || null,
       });
 
       if (error) {
-        console.error("Erreur d'inscription:", error);
         toast({
           title: "Erreur",
           description: "Une erreur s'est produite lors de l'inscription. Veuillez réessayer.",
@@ -86,8 +127,7 @@ const Inscription = () => {
 
       setIsSubmitting(false);
       setStep(3);
-    } catch (error) {
-      console.error("Erreur:", error);
+    } catch {
       toast({
         title: "Erreur",
         description: "Une erreur s'est produite. Veuillez réessayer.",
@@ -181,9 +221,11 @@ const Inscription = () => {
                         onChange={handleChange}
                         placeholder="Votre prénom"
                         className="pl-10"
+                        maxLength={50}
                         required
                       />
                     </div>
+                    {errors.firstName && <p className="text-sm text-destructive">{errors.firstName}</p>}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="lastName">Nom *</Label>
@@ -196,9 +238,11 @@ const Inscription = () => {
                         onChange={handleChange}
                         placeholder="Votre nom"
                         className="pl-10"
+                        maxLength={50}
                         required
                       />
                     </div>
+                    {errors.lastName && <p className="text-sm text-destructive">{errors.lastName}</p>}
                   </div>
                 </div>
 
@@ -215,9 +259,11 @@ const Inscription = () => {
                         onChange={handleChange}
                         placeholder="votre@email.com"
                         className="pl-10"
+                        maxLength={255}
                         required
                       />
                     </div>
+                    {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="phone">Téléphone *</Label>
@@ -231,9 +277,11 @@ const Inscription = () => {
                         onChange={handleChange}
                         placeholder="+509 XX XX XXXX"
                         className="pl-10"
+                        maxLength={20}
                         required
                       />
                     </div>
+                    {errors.phone && <p className="text-sm text-destructive">{errors.phone}</p>}
                   </div>
                 </div>
 
@@ -260,6 +308,7 @@ const Inscription = () => {
                       value={formData.birthPlace}
                       onChange={handleChange}
                       placeholder="Votre lieu de naissance"
+                      maxLength={100}
                     />
                   </div>
                 </div>
@@ -272,6 +321,7 @@ const Inscription = () => {
                     value={formData.address}
                     onChange={handleChange}
                     placeholder="Votre adresse complète"
+                    maxLength={200}
                   />
                 </div>
 
