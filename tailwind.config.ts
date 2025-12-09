@@ -61,6 +61,11 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // ECE Brand colors
+        ece: {
+          green: "#2a7938",
+          orange: "#e87722",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -102,8 +107,8 @@ export default {
         "float": "float 3s ease-in-out infinite",
       },
       boxShadow: {
-        'glow': '0 0 40px hsl(160 84% 39% / 0.3)',
-        'gold': '0 4px 20px hsl(38 92% 50% / 0.3)',
+        'glow': '0 0 40px hsl(131 48% 32% / 0.3)',
+        'gold': '0 4px 20px hsl(28 90% 55% / 0.3)',
       },
     },
   },

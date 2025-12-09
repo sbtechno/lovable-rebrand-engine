@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Facebook, Instagram, Linkedin, Phone, Mail, MapPin } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import eceLogo from "@/assets/ece-logo.jpeg";
+import eceLogo from "@/assets/ece-logo-transparent.png";
 
 export function Footer() {
   return (
@@ -15,7 +15,7 @@ export function Footer() {
               <img 
                 src={eceLogo} 
                 alt="ECE - École de Commerce et d'Entrepreneuriat" 
-                className="h-16 w-auto object-contain bg-white rounded-lg p-1"
+                className="h-20 w-auto object-contain bg-white/90 rounded-lg p-2"
               />
             </div>
             <p className="text-primary-foreground/80 text-sm leading-relaxed">
