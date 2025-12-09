@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import APropos from "./pages/APropos";
 import Programmes from "./pages/Programmes";
@@ -13,30 +14,43 @@ import Galerie from "./pages/Galerie";
 import Activites from "./pages/Activites";
 import Recherche from "./pages/Recherche";
 import NotFound from "./pages/NotFound";
+import Auth from "./pages/Auth";
+import AdminLayout from "./pages/admin/AdminLayout";
+import Dashboard from "./pages/admin/Dashboard";
+import Inscriptions from "./pages/admin/Inscriptions";
+import Contacts from "./pages/admin/Contacts";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/a-propos" element={<APropos />} />
-          <Route path="/programmes" element={<Programmes />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/inscription" element={<Inscription />} />
-          <Route path="/perspective" element={<Perspective />} />
-          <Route path="/galerie" element={<Galerie />} />
-          <Route path="/activites" element={<Activites />} />
-          <Route path="/recherche" element={<Recherche />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/a-propos" element={<APropos />} />
+            <Route path="/programmes" element={<Programmes />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/inscription" element={<Inscription />} />
+            <Route path="/perspective" element={<Perspective />} />
+            <Route path="/galerie" element={<Galerie />} />
+            <Route path="/activites" element={<Activites />} />
+            <Route path="/recherche" element={<Recherche />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="inscriptions" element={<Inscriptions />} />
+              <Route path="contacts" element={<Contacts />} />
+            </Route>
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 
