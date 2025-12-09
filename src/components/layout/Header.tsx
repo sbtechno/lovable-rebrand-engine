@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Menu, X, Phone, Mail, Clock, Facebook, Instagram, Linkedin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import eceLogo from "@/assets/ece-logo.jpeg";
 
 const navigation = [
   { name: "Accueil", href: "/" },
@@ -38,13 +39,13 @@ export function Header() {
               <Clock className="h-4 w-4" />
               <span className="hidden sm:inline">Lun - Ven : 8h - 16h</span>
             </div>
-            <a href="tel:+50933276379" className="flex items-center gap-2 hover:text-secondary transition-colors">
+            <a href="tel:+50947308207" className="flex items-center gap-2 hover:text-secondary transition-colors">
               <Phone className="h-4 w-4" />
-              <span className="hidden sm:inline">+509 33 27 6379</span>
+              <span className="hidden sm:inline">+509 4730 8207</span>
             </a>
-            <a href="mailto:contact@lovable.edu" className="flex items-center gap-2 hover:text-secondary transition-colors">
+            <a href="mailto:contact@ecehaiti.com" className="flex items-center gap-2 hover:text-secondary transition-colors">
               <Mail className="h-4 w-4" />
-              <span className="hidden md:inline">contact@lovable.edu</span>
+              <span className="hidden md:inline">contact@ecehaiti.com</span>
             </a>
           </div>
           <div className="flex items-center gap-4">
@@ -63,16 +64,14 @@ export function Header() {
 
       {/* Main navigation */}
       <nav className="bg-card/95 backdrop-blur-md shadow-md">
-        <div className="container flex items-center justify-between py-4">
+        <div className="container flex items-center justify-between py-3">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center shadow-glow">
-              <span className="text-primary-foreground font-display font-bold text-xl">L</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="font-display font-bold text-xl text-foreground">Lovable</span>
-              <span className="text-xs text-muted-foreground italic">plus belle, plus nice</span>
-            </div>
+            <img 
+              src={eceLogo} 
+              alt="ECE - École de Commerce et d'Entrepreneuriat" 
+              className="h-14 w-auto object-contain"
+            />
           </Link>
 
           {/* Desktop navigation */}

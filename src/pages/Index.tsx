@@ -2,29 +2,32 @@ import { Link } from "react-router-dom";
 import { ArrowRight, BookOpen, Users, Award, Calendar, GraduationCap, Briefcase, Building, ChevronRight, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout";
-import heroStudent from "@/assets/hero-student.png";
+import graduateStudent from "@/assets/graduate-student.png";
+import graduatesGroup from "@/assets/graduates-group.jpeg";
+import eceBuilding from "@/assets/ece-building.jpeg";
 import heroBg from "@/assets/hero-bg-pattern.png";
 
 const programs = [
-  { name: "Administration Commerciale", icon: Briefcase, description: "Business Administration" },
+  { name: "Business Administration", icon: Briefcase, description: "Administration Commerciale" },
   { name: "Comptabilité", icon: BookOpen, description: "Comptabilité et Finance" },
   { name: "Entrepreneuriat", icon: Building, description: "Création d'entreprise" },
   { name: "Gestion du Secrétariat", icon: Users, description: "Secrétariat professionnel" },
   { name: "Gestion des Ressources Humaines", icon: Users, description: "GRH" },
   { name: "Management de l'Information", icon: Award, description: "Systèmes d'information" },
+  { name: "Marketing de Vente", icon: Briefcase, description: "Techniques de vente" },
 ];
 
 const features = [
   { icon: BookOpen, title: "Cours complet", description: "Programmes académiques complets et actualisés" },
   { icon: Users, title: "Instructeurs experts", description: "Enseignants qualifiés et expérimentés" },
-  { icon: Calendar, title: "Apprentissage flexible", description: "Horaires adaptés à votre rythme" },
-  { icon: Award, title: "Certifications valides", description: "Diplômes reconnus internationalement" },
+  { icon: Calendar, title: "Apprentissage flexible", description: "5 sessions ou 2 ans ½ - Nouvelle session chaque 5 mois" },
+  { icon: Award, title: "Licence (L3)", description: "Sciences du Management et de l'Entreprise" },
 ];
 
 const stats = [
   { value: "100+", label: "Étudiants diplômés par an" },
   { value: "15+", label: "Années d'expérience" },
-  { value: "6", label: "Programmes offerts" },
+  { value: "7", label: "Programmes offerts" },
   { value: "95%", label: "Taux de satisfaction" },
 ];
 
@@ -47,11 +50,12 @@ const Index = () => {
               </div>
               
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-tight">
-                Bienvenue sur notre site officiel
+                Devenir Manager ou Entrepreneur
               </h1>
               
               <p className="text-lg md:text-xl text-primary-foreground/90 max-w-xl leading-relaxed">
-                Former les leaders de demain à travers le commerce, l'innovation et l'entrepreneuriat. Rejoignez une école tournée vers la pratique, le développement personnel et l'accomplissement de carrière.
+                Programme de formations accélérées - Licence (L3) en Sciences du Management et de l'Entreprise. 
+                Nouvelle session chaque 5 mois. <strong className="text-secondary">Inscription en cours !</strong>
               </p>
               
               <div className="flex flex-wrap gap-4">
@@ -71,8 +75,8 @@ const Index = () => {
               <div className="relative">
                 <div className="absolute -inset-4 bg-secondary/30 rounded-full blur-3xl" />
                 <img
-                  src={heroStudent}
-                  alt="Étudiante diplômée souriante"
+                  src={graduateStudent}
+                  alt="Étudiante diplômée ECE"
                   className="relative z-10 w-full max-w-md mx-auto drop-shadow-2xl animate-float"
                 />
               </div>
@@ -94,19 +98,19 @@ const Index = () => {
           <div className="text-center mb-16 animate-fade-in">
             <span className="text-secondary font-medium text-sm uppercase tracking-wider">Nos formations</span>
             <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mt-2">
-              Nos Programmes
+              Nos Orientations
             </h2>
             <p className="mt-4 text-muted-foreground max-w-2xl mx-auto">
-              Découvrez nos programmes de formation conçus pour vous préparer aux défis du monde professionnel moderne.
+              Découvrez nos 7 orientations de formation conçues pour vous préparer aux défis du monde professionnel moderne.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {programs.map((program, index) => (
               <Link
                 key={program.name}
                 to="/programmes"
-                className={`group bg-card rounded-2xl p-6 border border-border hover:border-primary/30 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 animate-fade-in-up stagger-${index + 1}`}
+                className={`group bg-card rounded-2xl p-6 border border-border hover:border-primary/30 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 animate-fade-in-up stagger-${Math.min(index + 1, 6)}`}
               >
                 <div className="w-14 h-14 rounded-xl bg-accent flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                   <program.icon className="h-7 w-7 text-accent-foreground group-hover:text-primary-foreground" />
@@ -125,11 +129,68 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Graduates Gallery Section */}
       <section className="py-24 bg-muted">
         <div className="container">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="animate-fade-in">
+              <span className="text-secondary font-medium text-sm uppercase tracking-wider">Nos diplômés</span>
+              <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mt-2 mb-6">
+                Une communauté de leaders
+              </h2>
+              <p className="text-muted-foreground mb-8 leading-relaxed">
+                Chaque année, nos étudiants obtiennent leur diplôme et rejoignent une communauté de professionnels 
+                accomplis. Ils sont la preuve vivante de l'excellence de notre formation.
+              </p>
+              
+              <div className="grid grid-cols-2 gap-4">
+                {stats.map((stat, index) => (
+                  <div key={stat.label} className={`bg-card rounded-xl p-4 shadow-sm animate-fade-in stagger-${index + 1}`}>
+                    <div className="text-3xl font-display font-bold text-primary mb-1">
+                      {stat.value}
+                    </div>
+                    <div className="text-sm text-muted-foreground">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative animate-slide-in-right">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                <img 
+                  src={graduatesGroup} 
+                  alt="Diplômés ECE avec leurs certificats" 
+                  className="w-full h-auto object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent" />
+              </div>
+              <div className="absolute -bottom-6 -left-6 bg-secondary text-secondary-foreground rounded-xl p-4 shadow-lg">
+                <div className="text-2xl font-display font-bold">2025</div>
+                <div className="text-sm">Promotion</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-24 bg-background">
+        <div className="container">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div className="order-2 lg:order-1 relative animate-fade-in">
+              <div className="rounded-2xl overflow-hidden shadow-2xl">
+                <img 
+                  src={eceBuilding} 
+                  alt="Bâtiment ECE - École de Commerce et d'Entrepreneuriat" 
+                  className="w-full h-auto object-cover"
+                />
+              </div>
+              <div className="absolute -top-4 -right-4 bg-primary text-primary-foreground rounded-xl px-6 py-3 shadow-lg">
+                <span className="font-display font-semibold">Port-de-Paix, Haïti</span>
+              </div>
+            </div>
+
+            <div className="order-1 lg:order-2 animate-slide-in-right">
               <span className="text-secondary font-medium text-sm uppercase tracking-wider">Pourquoi nous choisir ?</span>
               <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mt-2 mb-6">
                 C'est la voie de la lumière, c'est la bonne voie, c'est l'éducation.
@@ -152,20 +213,6 @@ const Index = () => {
                 ))}
               </div>
             </div>
-
-            <div className="grid grid-cols-2 gap-6 animate-slide-in-right">
-              {stats.map((stat, index) => (
-                <div
-                  key={stat.label}
-                  className={`bg-card rounded-2xl p-6 text-center shadow-lg border border-border ${index === 0 ? 'col-span-2' : ''}`}
-                >
-                  <div className="text-4xl md:text-5xl font-display font-bold text-primary mb-2">
-                    {stat.value}
-                  </div>
-                  <div className="text-muted-foreground text-sm">{stat.label}</div>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </section>
@@ -182,7 +229,7 @@ const Index = () => {
             Commencez votre parcours d'apprentissage dès aujourd'hui !
           </h2>
           <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto mb-8 animate-fade-in stagger-1">
-            Inscrivez-vous maintenant et rejoignez notre communauté d'étudiants ambitieux. Nos étudiants sont toujours satisfaits.
+            Inscrivez-vous maintenant et rejoignez notre communauté d'étudiants ambitieux. Nouvelle session chaque 5 mois !
           </p>
           <Button asChild variant="hero" size="xl" className="animate-fade-in stagger-2">
             <Link to="/inscription">
@@ -193,7 +240,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Testimonial / Stats Section */}
+      {/* Testimonial / Contact Section */}
       <section className="py-24 bg-background">
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -215,6 +262,10 @@ const Index = () => {
                   <CheckCircle className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
                   <p className="text-muted-foreground">Nos enseignants sont qualifiés et disposent de bonnes méthodes pédagogiques.</p>
                 </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
+                  <p className="text-muted-foreground">Formation accélérée en 5 sessions ou 2 ans ½.</p>
+                </div>
               </div>
             </div>
 
@@ -225,7 +276,15 @@ const Index = () => {
               <p className="text-muted-foreground mb-6">
                 Vous avez besoin de notre aide rapidement ? Cliquez sur le bouton pour nous contacter ou accédez à notre page de contact.
               </p>
-              <Button asChild>
+              <div className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  <strong>Téléphone:</strong> +509 4730 8207 / 4248 7444 / 3327 6379
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  <strong>Adresse:</strong> Port-de-Paix, Haïti, 48, angles des rues Benito Sylvain & Boisrond Tonnerre
+                </p>
+              </div>
+              <Button asChild className="mt-6">
                 <Link to="/contact">
                   Contactez-nous
                   <ArrowRight className="h-4 w-4 ml-2" />
