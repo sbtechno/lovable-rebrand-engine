@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, BookOpen, Users, Award, Calendar, GraduationCap, Briefcase, Building, ChevronRight, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout";
-import graduateStudent from "@/assets/gallery/graduate-4.jpeg";
+import graduateStudent from "@/assets/graduate-hero.png";
 import graduatesGroup from "@/assets/graduates-group.jpeg";
 import eceBuilding from "@/assets/ece-building.jpeg";
 import heroBg from "@/assets/hero-bg-pattern.png";
