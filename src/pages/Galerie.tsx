@@ -2,18 +2,28 @@ import { useState } from "react";
 import { Layout } from "@/components/layout";
 import { X } from "lucide-react";
 
+// Import ECE gallery images
+import graduate1 from "@/assets/gallery/graduate-1.jpeg";
+import graduate2 from "@/assets/gallery/graduate-2.jpeg";
+import graduate3 from "@/assets/gallery/graduate-3.jpeg";
+import graduate4 from "@/assets/gallery/graduate-4.jpeg";
+import graduate5 from "@/assets/gallery/graduate-5.jpeg";
+import studentsGroup from "@/assets/gallery/students-group.jpeg";
+import graduatesGroup from "@/assets/graduates-group.jpeg";
+import eceBuilding from "@/assets/ece-building.jpeg";
+
 const galleryImages = [
-  { id: 1, src: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800", alt: "Campus universitaire", category: "Campus" },
-  { id: 2, src: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800", alt: "Salle de classe", category: "Cours" },
-  { id: 3, src: "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=800", alt: "Étudiants", category: "Étudiants" },
-  { id: 4, src: "https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?w=800", alt: "Cérémonie de remise de diplômes", category: "Événements" },
-  { id: 5, src: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800", alt: "Travail en groupe", category: "Étudiants" },
-  { id: 6, src: "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800", alt: "Bibliothèque", category: "Campus" },
-  { id: 7, src: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800", alt: "Formation", category: "Cours" },
-  { id: 8, src: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800", alt: "Conférence", category: "Événements" },
+  { id: 1, src: graduate1, alt: "Diplômé ECE avec certificat", category: "Graduation" },
+  { id: 2, src: graduate2, alt: "Diplômée Ruth-Dana Labranche", category: "Graduation" },
+  { id: 3, src: graduate3, alt: "Diplômée Lauryns Beaubrun - Entrepreneuriat", category: "Graduation" },
+  { id: 4, src: studentsGroup, alt: "Étudiants ECE en uniforme", category: "Étudiants" },
+  { id: 5, src: graduate4, alt: "Diplômée avec son diplôme", category: "Graduation" },
+  { id: 6, src: graduate5, alt: "Étudiante diplômée souriante", category: "Graduation" },
+  { id: 7, src: graduatesGroup, alt: "Groupe de diplômés ECE 2025", category: "Graduation" },
+  { id: 8, src: eceBuilding, alt: "Bâtiment ECE - École de Commerce", category: "Campus" },
 ];
 
-const categories = ["Tous", "Campus", "Cours", "Étudiants", "Événements"];
+const categories = ["Tous", "Graduation", "Étudiants", "Campus"];
 
 const Galerie = () => {
   const [selectedCategory, setSelectedCategory] = useState("Tous");
@@ -38,7 +48,7 @@ const Galerie = () => {
               Galerie
             </h1>
             <p className="text-xl text-primary-foreground/90 leading-relaxed">
-              Découvrez notre campus, nos événements et la vie étudiante à travers nos photos.
+              Découvrez nos diplômés, nos étudiants et la vie à l'ECE à travers nos photos.
             </p>
           </div>
         </div>
