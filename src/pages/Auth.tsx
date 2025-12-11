@@ -23,14 +23,10 @@ const Auth = () => {
 
   // Redirect to admin after successful login and admin check completes
   useEffect(() => {
-    if (user && !loading && loginSuccess) {
-      // Give time for isAdmin check to complete then redirect
-      const timer = setTimeout(() => {
-        navigate('/admin');
-      }, 500);
-      return () => clearTimeout(timer);
+    if (user && !loading && loginSuccess && isAdmin) {
+      navigate('/admin');
     }
-  }, [user, loading, loginSuccess, navigate]);
+  }, [user, loading, loginSuccess, isAdmin, navigate]);
 
   const validateInputs = () => {
     try {
