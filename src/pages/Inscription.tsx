@@ -50,6 +50,8 @@ const Inscription = () => {
     previousEducation: "",
     acceptTerms: false,
   });
+  // Honeypot field for spam prevention - bots will fill this, humans won't see it
+  const [honeypot, setHoneypot] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -74,6 +76,14 @@ const Inscription = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Honeypot spam check - if filled, silently reject (bots fill hidden fields)
+    if (honeypot) {
+      // Fake success to not alert bots
+      setStep(3);
+      return;
+    }
+    
     setIsSubmitting(true);
     setErrors({});
 
@@ -336,6 +346,19 @@ const Inscription = () => {
 
             {step === 2 && (
               <form onSubmit={handleSubmit} className="space-y-8">
+                {/* Honeypot field - hidden from humans, bots will fill it */}
+                <div className="absolute -left-[9999px]" aria-hidden="true">
+                  <label htmlFor="company">Company</label>
+                  <input
+                    type="text"
+                    id="company"
+                    name="company"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                    tabIndex={-1}
+                    autoComplete="off"
+                  />
+                </div>
                 <div className="text-center">
                   <h2 className="text-2xl font-display font-bold text-foreground mb-2">
                     Programme et formation

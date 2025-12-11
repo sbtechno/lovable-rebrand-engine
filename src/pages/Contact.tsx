@@ -27,6 +27,8 @@ const Contact = () => {
     subject: "",
     message: "",
   });
+  // Honeypot field for spam prevention - bots will fill this, humans won't see it
+  const [honeypot, setHoneypot] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -42,6 +44,14 @@ const Contact = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Honeypot spam check - if filled, silently reject (bots fill hidden fields)
+    if (honeypot) {
+      // Fake success to not alert bots
+      setIsSuccess(true);
+      return;
+    }
+    
     setIsSubmitting(true);
     setErrors({});
 
@@ -213,6 +223,19 @@ const Contact = () => {
                     </h2>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
+                      {/* Honeypot field - hidden from humans, bots will fill it */}
+                      <div className="absolute -left-[9999px]" aria-hidden="true">
+                        <label htmlFor="website">Website</label>
+                        <input
+                          type="text"
+                          id="website"
+                          name="website"
+                          value={honeypot}
+                          onChange={(e) => setHoneypot(e.target.value)}
+                          tabIndex={-1}
+                          autoComplete="off"
+                        />
+                      </div>
                       <div className="grid md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                           <Label htmlFor="name">Nom complet *</Label>
