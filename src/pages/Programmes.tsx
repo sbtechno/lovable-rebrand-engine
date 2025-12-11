@@ -1,52 +1,60 @@
 import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout";
-import { ArrowRight, Clock, Award, Users, BookOpen } from "lucide-react";
+import { ArrowRight, Clock, Award, Users, BookOpen, GraduationCap, Briefcase, Trophy, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
-const programs = [
-  {
-    id: "licence-l3",
-    title: "Licence L3 en Sciences du Management et de l'Entreprise",
-    duration: "3 ans",
-    level: "Licence",
-    description: "Formation complète en gestion et management d'entreprise avec une approche pratique et théorique.",
-    features: ["Gestion d'entreprise", "Marketing", "Finance", "Ressources Humaines"],
-  },
-  {
-    id: "certification-bac",
-    title: "Programme de Certification (Niveau Baccalauréat)",
-    duration: "1 an",
-    level: "Certification",
-    description: "Programme intensif pour acquérir les compétences fondamentales en commerce et gestion.",
-    features: ["Comptabilité de base", "Communication", "Informatique", "Anglais des affaires"],
-  },
-  {
-    id: "mba",
-    title: "MBA (Master en Business Administration)",
-    duration: "2 ans",
-    level: "Master",
-    description: "Formation avancée pour les professionnels souhaitant développer leurs compétences en leadership et stratégie.",
-    features: ["Stratégie d'entreprise", "Leadership", "Finance avancée", "Entrepreneuriat"],
-  },
-  {
-    id: "certification-postgrade",
-    title: "Programme de Certification Postgradué",
-    duration: "1 an",
-    level: "Post-gradué",
-    description: "Spécialisation pour les diplômés de 2e cycle universitaire cherchant à approfondir leur expertise.",
-    features: ["Spécialisation métier", "Recherche appliquée", "Consulting", "Management avancé"],
-  },
-  {
-    id: "business-class",
-    title: "Business Class Certified",
-    duration: "6 mois",
-    level: "Certification",
-    description: "Programme accéléré pour les professionnels en activité souhaitant valider leurs compétences.",
-    features: ["Cours du soir", "Formation pratique", "Networking", "Certification reconnue"],
-  },
-];
+interface Program {
+  id: string;
+  title: string;
+  short_description: string | null;
+  full_description: string | null;
+  duration: string | null;
+  icon: string | null;
+  display_order: number | null;
+  is_active: boolean | null;
+}
+
+const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = {
+  GraduationCap,
+  Award,
+  Briefcase,
+  BookOpen,
+  Trophy,
+  Users,
+};
 
 const Programmes = () => {
+  const [programs, setPrograms] = useState<Program[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('programs')
+          .select('*')
+          .eq('is_active', true)
+          .order('display_order', { ascending: true });
+
+        if (error) throw error;
+        setPrograms(data || []);
+      } catch (error) {
+        console.error('Error fetching programs:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPrograms();
+  }, []);
+
+  const getIcon = (iconName: string | null) => {
+    if (!iconName || !iconMap[iconName]) return BookOpen;
+    return iconMap[iconName];
+  };
+
   return (
     <Layout>
       {/* Hero Section */}
@@ -71,62 +79,60 @@ const Programmes = () => {
       {/* Programs List */}
       <section className="py-24 bg-background">
         <div className="container">
-          <div className="space-y-8">
-            {programs.map((program, index) => (
-              <div
-                key={program.id}
-                className={`bg-card rounded-3xl border border-border overflow-hidden hover:border-primary/30 hover:shadow-xl transition-all duration-300 animate-fade-in-up stagger-${index + 1}`}
-              >
-                <div className="p-8 md:p-10">
-                  <div className="flex flex-col lg:flex-row lg:items-start gap-8">
-                    <div className="flex-1 space-y-4">
-                      <div className="flex flex-wrap gap-3">
-                        <span className="inline-flex items-center gap-1.5 bg-primary/10 text-primary text-sm font-medium px-3 py-1 rounded-full">
-                          <Award className="h-4 w-4" />
-                          {program.level}
-                        </span>
-                        <span className="inline-flex items-center gap-1.5 bg-secondary/20 text-secondary-foreground text-sm font-medium px-3 py-1 rounded-full">
-                          <Clock className="h-4 w-4" />
-                          {program.duration}
-                        </span>
+          {loading ? (
+            <div className="flex justify-center items-center py-20">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : programs.length === 0 ? (
+            <div className="text-center py-20">
+              <p className="text-muted-foreground">Aucun programme disponible pour le moment.</p>
+            </div>
+          ) : (
+            <div className="space-y-8">
+              {programs.map((program, index) => {
+                const IconComponent = getIcon(program.icon);
+                return (
+                  <div
+                    key={program.id}
+                    className={`bg-card rounded-3xl border border-border overflow-hidden hover:border-primary/30 hover:shadow-xl transition-all duration-300 animate-fade-in-up stagger-${index + 1}`}
+                  >
+                    <div className="p-8 md:p-10">
+                      <div className="flex flex-col lg:flex-row lg:items-start gap-8">
+                        <div className="flex-1 space-y-4">
+                          <div className="flex flex-wrap gap-3">
+                            <span className="inline-flex items-center gap-1.5 bg-primary/10 text-primary text-sm font-medium px-3 py-1 rounded-full">
+                              <IconComponent className="h-4 w-4" />
+                              Programme
+                            </span>
+                            {program.duration && (
+                              <span className="inline-flex items-center gap-1.5 bg-secondary/20 text-secondary-foreground text-sm font-medium px-3 py-1 rounded-full">
+                                <Clock className="h-4 w-4" />
+                                {program.duration}
+                              </span>
+                            )}
+                          </div>
+                          
+                          <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground">
+                            {program.title}
+                          </h2>
+                          
+                          <p className="text-muted-foreground leading-relaxed">
+                            {program.short_description || program.full_description}
+                          </p>
+                        </div>
+                        
+                        <div className="flex flex-col gap-3 lg:w-48">
+                          <Button asChild variant="outline" className="w-full">
+                            <Link to="/inscription">S'inscrire</Link>
+                          </Button>
+                        </div>
                       </div>
-                      
-                      <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground">
-                        {program.title}
-                      </h2>
-                      
-                      <p className="text-muted-foreground leading-relaxed">
-                        {program.description}
-                      </p>
-                      
-                      <div className="flex flex-wrap gap-2 pt-2">
-                        {program.features.map((feature) => (
-                          <span
-                            key={feature}
-                            className="bg-muted text-muted-foreground text-sm px-3 py-1.5 rounded-lg"
-                          >
-                            {feature}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    <div className="flex flex-col gap-3 lg:w-48">
-                      <Button asChild variant="default" className="w-full">
-                        <Link to={`/programmes/${program.id}`}>
-                          Voir le programme
-                          <ArrowRight className="h-4 w-4 ml-2" />
-                        </Link>
-                      </Button>
-                      <Button asChild variant="outline" className="w-full">
-                        <Link to="/inscription">S'inscrire</Link>
-                      </Button>
                     </div>
                   </div>
-                </div>
-              </div>
-            ))}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </section>
 
