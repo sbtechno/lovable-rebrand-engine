@@ -14,17 +14,23 @@ const passwordSchema = z.string().min(6, "Le mot de passe doit contenir au moins
 
 const Auth = () => {
   const navigate = useNavigate();
-  const { user, signIn, loading } = useAuth();
+  const { user, isAdmin, signIn, loading } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
 
+  // Redirect to admin after successful login and admin check completes
   useEffect(() => {
-    if (user && !loading) {
-      navigate('/admin');
+    if (user && !loading && loginSuccess) {
+      // Give time for isAdmin check to complete then redirect
+      const timer = setTimeout(() => {
+        navigate('/admin');
+      }, 500);
+      return () => clearTimeout(timer);
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, loginSuccess, navigate]);
 
   const validateInputs = () => {
     try {
@@ -55,7 +61,7 @@ const Auth = () => {
       }
     } else {
       toast.success('Connexion réussie');
-      navigate('/admin');
+      setLoginSuccess(true);
     }
   };
 
