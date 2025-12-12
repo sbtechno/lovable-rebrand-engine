@@ -1,6 +1,22 @@
+import { useState, useEffect } from "react";
 import { Layout } from "@/components/layout";
 import { Calendar, MapPin, Clock, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+
+interface ActivitiesContent {
+  hero: {
+    title: string;
+    description: string;
+  };
+}
+
+const defaultContent: ActivitiesContent = {
+  hero: {
+    title: "Activité Para-Étudiante",
+    description: "Événements, ateliers et activités pour enrichir votre expérience étudiante."
+  }
+};
 
 const activities = [
   {
@@ -46,6 +62,23 @@ const activities = [
 ];
 
 const Activites = () => {
+  const [content, setContent] = useState<ActivitiesContent>(defaultContent);
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      const { data } = await supabase
+        .from("page_content")
+        .select("content")
+        .eq("page_key", "activities")
+        .maybeSingle();
+
+      if (data?.content) {
+        setContent(data.content as unknown as ActivitiesContent);
+      }
+    };
+    fetchContent();
+  }, []);
+
   const getTypeColor = (type: string) => {
     switch (type) {
       case "Conférence":
@@ -73,10 +106,10 @@ const Activites = () => {
         <div className="container relative z-10">
           <div className="max-w-3xl mx-auto text-center text-primary-foreground animate-fade-in">
             <h1 className="text-4xl md:text-5xl font-display font-bold mb-6">
-              Activité Para-Étudiante
+              {content.hero.title}
             </h1>
             <p className="text-xl text-primary-foreground/90 leading-relaxed">
-              Événements, ateliers et activités pour enrichir votre expérience étudiante.
+              {content.hero.description}
             </p>
           </div>
         </div>

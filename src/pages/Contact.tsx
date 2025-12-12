@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Layout } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,46 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 
+interface ContactContent {
+  hero: {
+    title: string;
+    description: string;
+  };
+  info: {
+    title: string;
+    description: string;
+    phone: string;
+    email: string;
+    address: string;
+    hours: string;
+  };
+  form: {
+    title: string;
+    success_title: string;
+    success_description: string;
+  };
+}
+
+const defaultContent: ContactContent = {
+  hero: {
+    title: "Nous Contacter",
+    description: "Nous sommes là pour répondre à toutes vos questions."
+  },
+  info: {
+    title: "Informations de contact",
+    description: "Contactez-nous par téléphone, email ou venez nous rendre visite.",
+    phone: "+509 4730 8207 / 4248 7444 / 3327 6379",
+    email: "contact@ecehaiti.com",
+    address: "Port-de-Paix, Haïti\n48, angles des rues Benito Sylvain & Boisrond Tonnerre",
+    hours: "Lun - Ven : 8h - 16h"
+  },
+  form: {
+    title: "Envoyez-nous un message",
+    success_title: "Message envoyé !",
+    success_description: "Merci pour votre message. Nous vous répondrons dans les plus brefs délais."
+  }
+};
+
 const contactSchema = z.object({
   name: z.string().trim().min(1, "Le nom est requis").max(100, "Le nom ne peut pas dépasser 100 caractères"),
   email: z.string().trim().email("Adresse email invalide").max(255, "L'email ne peut pas dépasser 255 caractères"),
@@ -18,6 +58,7 @@ const contactSchema = z.object({
 
 const Contact = () => {
   const { toast } = useToast();
+  const [content, setContent] = useState<ContactContent>(defaultContent);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -27,16 +68,26 @@ const Contact = () => {
     subject: "",
     message: "",
   });
-  // Honeypot field for spam prevention - bots will fill this, humans won't see it
   const [honeypot, setHoneypot] = useState("");
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      const { data } = await supabase
+        .from("page_content")
+        .select("content")
+        .eq("page_key", "contact")
+        .maybeSingle();
+
+      if (data?.content) {
+        setContent(data.content as unknown as ContactContent);
+      }
+    };
+    fetchContent();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    // Clear error when user starts typing
+    setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -45,9 +96,7 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Honeypot spam check - if filled, silently reject (bots fill hidden fields)
     if (honeypot) {
-      // Fake success to not alert bots
       setIsSuccess(true);
       return;
     }
@@ -55,7 +104,6 @@ const Contact = () => {
     setIsSubmitting(true);
     setErrors({});
 
-    // Validate form data
     const result = contactSchema.safeParse(formData);
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
@@ -86,7 +134,7 @@ const Contact = () => {
       if (error) {
         toast({
           title: "Erreur",
-          description: "Une erreur s'est produite lors de l'envoi. Veuillez réessayer.",
+          description: "Une erreur s'est produite lors de l'envoi.",
           variant: "destructive",
         });
         setIsSubmitting(false);
@@ -98,18 +146,13 @@ const Contact = () => {
         description: "Nous vous répondrons dans les plus brefs délais.",
       });
 
-      setFormData({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
-      });
+      setFormData({ name: "", email: "", subject: "", message: "" });
       setIsSuccess(true);
       setIsSubmitting(false);
     } catch {
       toast({
         title: "Erreur",
-        description: "Une erreur s'est produite. Veuillez réessayer.",
+        description: "Une erreur s'est produite.",
         variant: "destructive",
       });
       setIsSubmitting(false);
@@ -117,30 +160,10 @@ const Contact = () => {
   };
 
   const contactInfo = [
-    {
-      icon: Phone,
-      title: "Téléphone",
-      content: "+509 4730 8207 / 4248 7444 / 3327 6379",
-      href: "tel:+50947308207",
-    },
-    {
-      icon: Mail,
-      title: "Email",
-      content: "contact@ecehaiti.com",
-      href: "mailto:contact@ecehaiti.com",
-    },
-    {
-      icon: MapPin,
-      title: "Adresse",
-      content: "Port-de-Paix, Haïti\n48, angles des rues Benito Sylvain & Boisrond Tonnerre",
-      href: "#",
-    },
-    {
-      icon: Clock,
-      title: "Horaires",
-      content: "Lun - Ven : 8h - 16h",
-      href: "#",
-    },
+    { icon: Phone, title: "Téléphone", content: content.info.phone, href: "tel:+50947308207" },
+    { icon: Mail, title: "Email", content: content.info.email, href: `mailto:${content.info.email}` },
+    { icon: MapPin, title: "Adresse", content: content.info.address, href: "#" },
+    { icon: Clock, title: "Horaires", content: content.info.hours, href: "#" },
   ];
 
   return (
@@ -155,10 +178,10 @@ const Contact = () => {
         <div className="container relative z-10">
           <div className="max-w-3xl mx-auto text-center text-primary-foreground animate-fade-in">
             <h1 className="text-4xl md:text-5xl font-display font-bold mb-6">
-              Nous Contacter
+              {content.hero.title}
             </h1>
             <p className="text-xl text-primary-foreground/90 leading-relaxed">
-              Nous sommes là pour répondre à toutes vos questions. N'hésitez pas à nous contacter.
+              {content.hero.description}
             </p>
           </div>
         </div>
@@ -172,10 +195,10 @@ const Contact = () => {
             <div className="space-y-6 animate-fade-in">
               <div>
                 <h2 className="text-2xl font-display font-bold text-foreground mb-4">
-                  Informations de contact
+                  {content.info.title}
                 </h2>
                 <p className="text-muted-foreground">
-                  Contactez-nous par téléphone, email ou venez nous rendre visite à notre campus.
+                  {content.info.description}
                 </p>
               </div>
 
@@ -207,10 +230,10 @@ const Contact = () => {
                       <CheckCircle className="h-10 w-10 text-primary-foreground" />
                     </div>
                     <h2 className="text-2xl font-display font-bold text-foreground">
-                      Message envoyé !
+                      {content.form.success_title}
                     </h2>
                     <p className="text-muted-foreground max-w-md mx-auto">
-                      Merci pour votre message. Nous vous répondrons dans les plus brefs délais.
+                      {content.form.success_description}
                     </p>
                     <Button onClick={() => setIsSuccess(false)} variant="outline">
                       Envoyer un autre message
@@ -219,11 +242,10 @@ const Contact = () => {
                 ) : (
                   <>
                     <h2 className="text-2xl font-display font-bold text-foreground mb-6">
-                      Envoyez-nous un message
+                      {content.form.title}
                     </h2>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
-                      {/* Honeypot field - hidden from humans, bots will fill it */}
                       <div className="absolute -left-[9999px]" aria-hidden="true">
                         <label htmlFor="website">Website</label>
                         <input

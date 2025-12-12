@@ -1,6 +1,30 @@
+import { useState, useEffect } from "react";
 import { Layout } from "@/components/layout";
 import { FileText, Download, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+
+interface ResearchContent {
+  hero: {
+    title: string;
+    description: string;
+  };
+  cta: {
+    title: string;
+    description: string;
+  };
+}
+
+const defaultContent: ResearchContent = {
+  hero: {
+    title: "Recherche Académique",
+    description: "Publications, travaux de recherche et contributions académiques de notre institution."
+  },
+  cta: {
+    title: "Contribuer à la recherche",
+    description: "Vous êtes chercheur, enseignant ou étudiant et souhaitez contribuer à nos publications ? Contactez notre département de recherche."
+  }
+};
 
 const publications = [
   {
@@ -38,6 +62,23 @@ const publications = [
 ];
 
 const Recherche = () => {
+  const [content, setContent] = useState<ResearchContent>(defaultContent);
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      const { data } = await supabase
+        .from("page_content")
+        .select("content")
+        .eq("page_key", "research")
+        .maybeSingle();
+
+      if (data?.content) {
+        setContent(data.content as unknown as ResearchContent);
+      }
+    };
+    fetchContent();
+  }, []);
+
   return (
     <Layout>
       {/* Hero Section */}
@@ -50,10 +91,10 @@ const Recherche = () => {
         <div className="container relative z-10">
           <div className="max-w-3xl mx-auto text-center text-primary-foreground animate-fade-in">
             <h1 className="text-4xl md:text-5xl font-display font-bold mb-6">
-              Recherche Académique
+              {content.hero.title}
             </h1>
             <p className="text-xl text-primary-foreground/90 leading-relaxed">
-              Publications, travaux de recherche et contributions académiques de notre institution.
+              {content.hero.description}
             </p>
           </div>
         </div>
@@ -115,10 +156,10 @@ const Recherche = () => {
       <section className="py-16 bg-muted">
         <div className="container text-center animate-fade-in">
           <h2 className="text-2xl font-display font-bold text-foreground mb-4">
-            Contribuer à la recherche
+            {content.cta.title}
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto mb-6">
-            Vous êtes chercheur, enseignant ou étudiant et souhaitez contribuer à nos publications ? Contactez notre département de recherche.
+            {content.cta.description}
           </p>
           <Button asChild>
             <a href="/contact">Nous contacter</a>
