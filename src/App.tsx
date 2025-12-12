@@ -22,6 +22,7 @@ import Contacts from "./pages/admin/Contacts";
 import AdminPrograms from "./pages/admin/AdminPrograms";
 import AdminGallery from "./pages/admin/AdminGallery";
 import AdminTestimonials from "./pages/admin/AdminTestimonials";
+import AdminContent from "./pages/admin/AdminContent";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +48,7 @@ const App = () => (
               <Route index element={<Dashboard />} />
               <Route path="inscriptions" element={<Inscriptions />} />
               <Route path="contacts" element={<Contacts />} />
+              <Route path="contenu" element={<AdminContent />} />
               <Route path="programmes" element={<AdminPrograms />} />
               <Route path="galerie" element={<AdminGallery />} />
               <Route path="temoignages" element={<AdminTestimonials />} />
