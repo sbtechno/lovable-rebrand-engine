@@ -1,0 +1,8 @@
+---
+deployment:
+  tasks:
+    - echo "Starting deployment of Lovable project..."
+    - export PATH=/opt/cpanel/ea-nodejs16/bin:$PATH
+    - npm install
+    - npm run build
+  verbose: true
