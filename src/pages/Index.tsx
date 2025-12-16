@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ArrowRight, BookOpen, Users, Award, Calendar, GraduationCap, Briefcase, Building, ChevronRight, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout";
@@ -8,6 +8,11 @@ import graduatesGroup from "@/assets/graduates-group.jpeg";
 import eceBuilding from "@/assets/ece-building.jpeg";
 import heroBg from "@/assets/hero-bg-pattern.png";
 import { supabase } from "@/integrations/supabase/client";
+
+interface Program {
+  id: string;
+  title: string;
+}
 
 interface HomeContent {
   hero: {
@@ -121,6 +126,9 @@ const featureIcons = [BookOpen, Users, Calendar, Award];
 
 const Index = () => {
   const [content, setContent] = useState<HomeContent>(defaultContent);
+  const [programs, setPrograms] = useState<Program[]>([]);
+  const [currentProgramIndex, setCurrentProgramIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -136,6 +144,36 @@ const Index = () => {
     };
     fetchContent();
   }, []);
+
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      const { data } = await supabase
+        .from("programs")
+        .select("id, title")
+        .eq("is_active", true)
+        .order("display_order");
+      
+      if (data && data.length > 0) {
+        setPrograms(data);
+      }
+    };
+    fetchPrograms();
+  }, []);
+
+  // Rotate through programs
+  useEffect(() => {
+    if (programs.length === 0) return;
+    
+    const interval = setInterval(() => {
+      setIsAnimating(true);
+      setTimeout(() => {
+        setCurrentProgramIndex((prev) => (prev + 1) % programs.length);
+        setIsAnimating(false);
+      }, 500);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [programs.length]);
 
   return (
     <Layout>
@@ -155,7 +193,16 @@ const Index = () => {
               </div>
               
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-tight">
-                {content.hero.title}
+                Devenir Manager ou Entrepreneur
+                {programs.length > 0 && (
+                  <span className="block mt-2 text-secondary">
+                    <span 
+                      className={`inline-block transition-all duration-500 ${isAnimating ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}
+                    >
+                      {programs[currentProgramIndex]?.title}
+                    </span>
+                  </span>
+                )}
               </h1>
               
               <p className="text-lg md:text-xl text-primary-foreground/90 max-w-xl leading-relaxed">
