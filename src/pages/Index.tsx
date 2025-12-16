@@ -160,14 +160,15 @@ const Index = () => {
     fetchPrograms();
   }, []);
 
-  // Rotate through programs
+  // Rotate through "Devenir Manager ou Entrepreneur" + programs
   useEffect(() => {
-    if (programs.length === 0) return;
+    const totalItems = programs.length + 1; // +1 for the first text
+    if (totalItems <= 1) return;
     
     const interval = setInterval(() => {
       setIsAnimating(true);
       setTimeout(() => {
-        setCurrentProgramIndex((prev) => (prev + 1) % programs.length);
+        setCurrentProgramIndex((prev) => (prev + 1) % totalItems);
         setIsAnimating(false);
       }, 500);
     }, 3000);
@@ -193,16 +194,13 @@ const Index = () => {
               </div>
               
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-tight">
-                Devenir Manager ou Entrepreneur
-                {programs.length > 0 && (
-                  <span className="block mt-2 text-secondary">
-                    <span 
-                      className={`inline-block transition-all duration-500 ${isAnimating ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}
-                    >
-                      {programs[currentProgramIndex]?.title}
-                    </span>
-                  </span>
-                )}
+                <span 
+                  className={`inline-block transition-all duration-500 ${isAnimating ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}
+                >
+                  {currentProgramIndex === 0 
+                    ? "Devenir Manager ou Entrepreneur" 
+                    : programs[currentProgramIndex - 1]?.title}
+                </span>
               </h1>
               
               <p className="text-lg md:text-xl text-primary-foreground/90 max-w-xl leading-relaxed">
