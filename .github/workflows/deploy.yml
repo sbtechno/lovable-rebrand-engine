@@ -1,43 +1,13 @@
-name: Deploy Website to cPanel
-
-on:
-  push:
-    branches:
-      - main  # Lè w fè push nan branch main, deploy ap kouri
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-      # 1️⃣ Checkout repository
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      # 2️⃣ Setup Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-
-      # 3️⃣ Install dependencies
-      - name: Install dependencies
-        run: npm install
-
-      # 4️⃣ Build project
-      - name: Build project
-        run: npm run build
-
-      # 5️⃣ Deploy dist via SFTP to cPanel
       - name: Deploy to cPanel
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.CPANEL_HOST }}       # eg: server376.web-hosting.com
-          username: ${{ secrets.CPANEL_USER }}   # eg: ecehidmk
-          key: ${{ secrets.CPANEL_SSH_KEY }}     # private SSH key ou mete kòm secret
-          port: 21098                            # cPanel SFTP port
-          source: "dist/*"                       # Katab build ou
-          target: "/public_html/"                # Katab sou cPanel
-          rm: true                               # Efase fichye avan upload
-          overwrite: true                        # Overwrite fichye ki deja egziste
+          host: ${{ secrets.CPANEL_HOST }}
+          username: ${{ secrets.CPANEL_USER }}
+          key: ${{ secrets.CPANEL_SSH_KEY }}
+          passphrase: ${{ secrets.CPANEL_KEY_PASSPHRASE }}
+          port: 21098
+          source: "dist/*"
+          target: "/public_html/"
+          rm: true
+          overwrite: true
           debug: true
