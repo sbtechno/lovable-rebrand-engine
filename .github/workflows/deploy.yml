@@ -1,13 +1,37 @@
+name: Deploy Website to cPanel
 
-- name: Deploy to cPanel
-  uses: appleboy/scp-action@v0.1.7
-  with:
-    host: ${{ secrets.CPANEL_HOST }}       # eg: server376.web-hosting.com
-    username: ${{ secrets.CPANEL_USER }}   # eg: ecehidmk
-    key: ${{ secrets.CPANEL_SSH_KEY }}     # secret ou te ajoute
-    port: 21098                            # port SFTP cPanel
-    source: "dist/*"                       # katab lokal build ou
-    target: "/public_html/"                # katab sou cPanel
-    rm: true                               # efase target avan upload
-    overwrite: true                        # overwrite fichye ki deja egziste
-    debug: true
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+
+      - name: Deploy to cPanel
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.CPANEL_HOST }}
+          username: ${{ secrets.CPANEL_USER }}
+          key: ${{ secrets.CPANEL_SSH_KEY }}
+          port: 21098
+          source: "dist/*"
+          target: "/public_html/"
+          rm: true
+          overwrite: true
+          debug: true
