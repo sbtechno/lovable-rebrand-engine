@@ -1,0 +1,15 @@
+---
+# cPanel Deployment Config pou pwojè Lovable
+deployment:
+  # Sa cPanel ap kouri lè ou fè deploy
+  tasks:
+    - echo "Starting deployment..."
+    - export NODE_ENV=production
+    - npm install
+    - npm run build
+    - echo "Build finished, ready to deploy."
+
+  # Kote li pral mete fichye build yo
+  targets:
+    - /home/sbtechn/public_html
+
