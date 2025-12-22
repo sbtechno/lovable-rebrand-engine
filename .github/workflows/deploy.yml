@@ -1,4 +1,4 @@
-name: Deploy Website to Namecheap cPanel with Backup
+name: Deploy Website to Namecheap cPanel
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repository
+      # 1️⃣ Checkout repo
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -28,28 +28,17 @@ jobs:
       - name: Build project
         run: npm run build
 
-      # 5️⃣ Backup existing public_html (optional)
-      - name: Backup existing public_html
+      # 5️⃣ Deploy via SFTP
+      - name: Deploy to Namecheap cPanel
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.CPANEL_HOST }}
-          username: ${{ secrets.CPANEL_USER }}
-          password: ${{ secrets.CPANEL_PASSWORD }}
-          port: 21
-          source: "/public_html/*"
-          target: "/home/${{ secrets.CPANEL_USER }}/backup_$(date +%Y%m%d_%H%M%S)/"
-          overwrite: true
-          debug: true
+          host: ${{ secrets.CPANEL_HOST }}        # server hostname ou: server376.web-hosting.com
+          username: ${{ secrets.CPANEL_USER }}    # cPanel username ou: ecehidmk
+          password: ${{ secrets.CPANEL_PASSWORD }}# cPanel password ou
+          port: ${{ secrets.CPANEL_PORT }}        # SFTP port ou: 21098
+          source: "dist/*"                        # Katab lokal ki gen build ou
+          target: "/public_html/"                 # Katab sou cPanel kote sit la ye
+          rm: false                               # pa efase fichye ki pa nan build
+          overwrite: true                         # ranplase fichye ki deja egziste
+          debug: true                             # pou wè logs deploy
 
-      # 6️⃣ Deploy new build
-      - name: Deploy new build
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.CPANEL_HOST }}
-          username: ${{ secrets.CPANEL_USER }}
-          password: ${{ secrets.CPANEL_PASSWORD }}
-          port: 22
-          source: "dist/*"
-          target: "/public_html/"
-          overwrite: true
-          debug: true
