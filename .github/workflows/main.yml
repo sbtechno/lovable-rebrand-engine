@@ -1,0 +1,43 @@
+name: Deploy Website to Namecheap cPanel
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout kòd la
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2️⃣ Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      # 3️⃣ Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # 4️⃣ Build project
+      - name: Build project
+        run: npm run build
+
+      # 5️⃣ Deploy dist folder to Namecheap via SFTP
+      - name: Deploy to cPanel
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.CPANEL_HOST }}       # eg: server376.web-hosting.com
+          username: ${{ secrets.CPANEL_USER }}   # eg: ecehidmk
+          key: ${{ secrets.CPANEL_SSH_KEY }}     # private key san passphrase
+          port: 21098                             # SFTP port Namecheap
+          source: "dist/*"                        # Katab lokal build ou
+          target: "/public_html/"                 # Katab sou cPanel
+          rm: true                                # efase target avan upload
+          overwrite: true                         # overwrite fichye ki deja egziste
+          debug: true                             # pou w wè log detaye
