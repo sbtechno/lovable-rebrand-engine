@@ -1,4 +1,4 @@
-name: Deploy Website to Namecheap cPanel
+name: Deploy Website to Namecheap cPanel with Backup
 
 on:
   push:
@@ -28,16 +28,28 @@ jobs:
       - name: Build project
         run: npm run build
 
-      # 5️⃣ Deploy dist via SFTP using appleboy/scp-action
-      - name: Deploy to Namecheap
+      # 5️⃣ Backup existing public_html (optional)
+      - name: Backup existing public_html
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.CPANEL_HOST }}         # eg: example.com
-          username: ${{ secrets.CPANEL_USER }}     # cPanel username
-          password: ${{ secrets.CPANEL_PASSWORD }} # cPanel password
-          port: 22                                 # default SFTP/SSH port
-          source: "dist/*"                         # Katab lokal build ou
-          target: "/public_html/"                  # Katab sou cPanel kote sit la ye
-          rm: true                                 # efase target avan upload
-          overwrite: true                          # overwrite fichye ki deja egziste
+          host: ${{ secrets.CPANEL_HOST }}
+          username: ${{ secrets.CPANEL_USER }}
+          password: ${{ secrets.CPANEL_PASSWORD }}
+          port: 21
+          source: "/public_html/*"
+          target: "/home/${{ secrets.CPANEL_USER }}/backup_$(date +%Y%m%d_%H%M%S)/"
+          overwrite: true
+          debug: true
+
+      # 6️⃣ Deploy new build
+      - name: Deploy new build
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.CPANEL_HOST }}
+          username: ${{ secrets.CPANEL_USER }}
+          password: ${{ secrets.CPANEL_PASSWORD }}
+          port: 22
+          source: "dist/*"
+          target: "/public_html/"
+          overwrite: true
           debug: true
