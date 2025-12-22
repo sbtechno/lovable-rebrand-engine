@@ -244,34 +244,34 @@ const Index = () => {
       </section>
 
       {/* Programs Section */}
-      <section className="py-24 bg-background">
-        <div className="container">
-          <div className="text-center mb-16 animate-fade-in">
-            <span className="text-secondary font-medium text-sm uppercase tracking-wider">{content.programs_section.subtitle}</span>
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mt-2">
+      <section className="py-12 sm:py-16 md:py-24 bg-background">
+        <div className="container px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-12 md:mb-16 animate-fade-in">
+            <span className="text-secondary font-medium text-xs sm:text-sm uppercase tracking-wider">{content.programs_section.subtitle}</span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-foreground mt-2">
               {content.programs_section.title}
             </h2>
-            <p className="mt-4 text-muted-foreground max-w-2xl mx-auto">
+            <p className="mt-3 sm:mt-4 text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto px-4 sm:px-0">
               {content.programs_section.description}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {content.orientations.map((program, index) => {
               const IconComponent = iconMap[program.name] || BookOpen;
               return (
                 <Link
                   key={program.name}
                   to="/programmes"
-                  className={`group bg-card rounded-2xl p-6 border border-border hover:border-primary/30 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 animate-fade-in-up stagger-${Math.min(index + 1, 6)}`}
+                  className={`group bg-card rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-border hover:border-primary/30 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 animate-fade-in-up stagger-${Math.min(index + 1, 6)}`}
                 >
-                  <div className="w-14 h-14 rounded-xl bg-accent flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                    <IconComponent className="h-7 w-7 text-accent-foreground group-hover:text-primary-foreground" />
+                  <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-lg sm:rounded-xl bg-accent flex items-center justify-center mb-3 sm:mb-4 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                    <IconComponent className="h-5 w-5 sm:h-7 sm:w-7 text-accent-foreground group-hover:text-primary-foreground" />
                   </div>
-                  <h3 className="font-display font-semibold text-lg text-foreground mb-2 group-hover:text-primary transition-colors">
+                  <h3 className="font-display font-semibold text-base sm:text-lg text-foreground mb-1 sm:mb-2 group-hover:text-primary transition-colors">
                     {program.name}
                   </h3>
-                  <p className="text-muted-foreground text-sm mb-4">{program.description}</p>
+                  <p className="text-muted-foreground text-xs sm:text-sm mb-3 sm:mb-4">{program.description}</p>
                   <span className="inline-flex items-center text-primary text-sm font-medium">
                     En savoir plus
                     <ChevronRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
@@ -284,32 +284,32 @@ const Index = () => {
       </section>
 
       {/* Graduates Gallery Section */}
-      <section className="py-24 bg-muted">
-        <div className="container">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <section className="py-12 sm:py-16 md:py-24 bg-muted">
+        <div className="container px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
             <div className="animate-fade-in">
-              <span className="text-secondary font-medium text-sm uppercase tracking-wider">{content.graduates_section.subtitle}</span>
-              <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mt-2 mb-6">
+              <span className="text-secondary font-medium text-xs sm:text-sm uppercase tracking-wider">{content.graduates_section.subtitle}</span>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-foreground mt-2 mb-4 sm:mb-6">
                 {content.graduates_section.title}
               </h2>
-              <p className="text-muted-foreground mb-8 leading-relaxed">
+              <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8 leading-relaxed">
                 {content.graduates_section.description}
               </p>
               
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 {content.stats.map((stat, index) => (
-                  <div key={stat.label} className={`bg-card rounded-xl p-4 shadow-sm animate-fade-in stagger-${index + 1}`}>
-                    <div className="text-3xl font-display font-bold text-primary mb-1">
+                  <div key={stat.label} className={`bg-card rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-sm animate-fade-in stagger-${index + 1}`}>
+                    <div className="text-2xl sm:text-3xl font-display font-bold text-primary mb-1">
                       {stat.value}
                     </div>
-                    <div className="text-sm text-muted-foreground">{stat.label}</div>
+                    <div className="text-xs sm:text-sm text-muted-foreground">{stat.label}</div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="relative animate-slide-in-right">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+            <div className="relative animate-slide-in-right order-first lg:order-last">
+              <div className="relative rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl">
                 <img 
                   src={graduatesGroup} 
                   alt="Diplômés ECE avec leurs certificats" 
@@ -317,9 +317,9 @@ const Index = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent" />
               </div>
-              <div className="absolute -bottom-6 -left-6 bg-secondary text-secondary-foreground rounded-xl p-4 shadow-lg">
-                <div className="text-2xl font-display font-bold">{content.graduates_section.promo_year}</div>
-                <div className="text-sm">Promotion</div>
+              <div className="absolute -bottom-4 -left-2 sm:-bottom-6 sm:-left-6 bg-secondary text-secondary-foreground rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-lg">
+                <div className="text-xl sm:text-2xl font-display font-bold">{content.graduates_section.promo_year}</div>
+                <div className="text-xs sm:text-sm">Promotion</div>
               </div>
             </div>
           </div>
@@ -327,42 +327,42 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-24 bg-background">
-        <div className="container">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+      <section className="py-12 sm:py-16 md:py-24 bg-background">
+        <div className="container px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
             <div className="order-2 lg:order-1 relative animate-fade-in">
-              <div className="rounded-2xl overflow-hidden shadow-2xl">
+              <div className="rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl">
                 <img 
                   src={eceBuilding} 
                   alt="Bâtiment ECE - École de Commerce et d'Entrepreneuriat" 
                   className="w-full h-auto object-cover"
                 />
               </div>
-              <div className="absolute -top-4 -right-4 bg-primary text-primary-foreground rounded-xl px-6 py-3 shadow-lg">
-                <span className="font-display font-semibold">{content.features_section.location}</span>
+              <div className="absolute -top-2 -right-2 sm:-top-4 sm:-right-4 bg-primary text-primary-foreground rounded-lg sm:rounded-xl px-3 py-2 sm:px-6 sm:py-3 shadow-lg">
+                <span className="font-display font-semibold text-xs sm:text-base">{content.features_section.location}</span>
               </div>
             </div>
 
             <div className="order-1 lg:order-2 animate-slide-in-right">
-              <span className="text-secondary font-medium text-sm uppercase tracking-wider">{content.features_section.subtitle}</span>
-              <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mt-2 mb-6">
+              <span className="text-secondary font-medium text-xs sm:text-sm uppercase tracking-wider">{content.features_section.subtitle}</span>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-foreground mt-2 mb-4 sm:mb-6">
                 {content.features_section.title}
               </h2>
-              <p className="text-muted-foreground mb-8 leading-relaxed">
+              <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8 leading-relaxed">
                 {content.features_section.description}
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 {content.features.map((feature, index) => {
                   const IconComponent = featureIcons[index] || BookOpen;
                   return (
-                    <div key={feature.title} className={`flex items-start gap-4 animate-fade-in stagger-${index + 1}`}>
-                      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                        <IconComponent className="h-6 w-6 text-primary" />
+                    <div key={feature.title} className={`flex items-start gap-3 sm:gap-4 animate-fade-in stagger-${index + 1}`}>
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <IconComponent className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                       </div>
                       <div>
-                        <h4 className="font-semibold text-foreground mb-1">{feature.title}</h4>
-                        <p className="text-sm text-muted-foreground">{feature.description}</p>
+                        <h4 className="font-semibold text-sm sm:text-base text-foreground mb-1">{feature.title}</h4>
+                        <p className="text-xs sm:text-sm text-muted-foreground">{feature.description}</p>
                       </div>
                     </div>
                   );
@@ -374,63 +374,63 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-primary relative overflow-hidden">
+      <section className="py-12 sm:py-16 md:py-24 bg-primary relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-96 h-96 bg-secondary rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
+          <div className="absolute top-0 left-0 w-48 sm:w-72 md:w-96 h-48 sm:h-72 md:h-96 bg-secondary rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+          <div className="absolute bottom-0 right-0 w-48 sm:w-72 md:w-96 h-48 sm:h-72 md:h-96 bg-secondary rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
         </div>
         
-        <div className="container relative z-10 text-center">
-          <h2 className="text-3xl md:text-4xl font-display font-bold text-primary-foreground mb-6 animate-fade-in">
+        <div className="container px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-primary-foreground mb-4 sm:mb-6 animate-fade-in">
             {content.cta_section.title}
           </h2>
-          <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto mb-8 animate-fade-in stagger-1">
+          <p className="text-primary-foreground/80 text-sm sm:text-base md:text-lg max-w-2xl mx-auto mb-6 sm:mb-8 animate-fade-in stagger-1 px-4 sm:px-0">
             {content.cta_section.description}
           </p>
-          <Button asChild variant="hero" size="xl" className="animate-fade-in stagger-2">
+          <Button asChild variant="hero" size="lg" className="sm:size-xl animate-fade-in stagger-2">
             <Link to="/inscription">
               {content.cta_section.button}
-              <ArrowRight className="h-5 w-5 ml-2" />
+              <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 ml-2" />
             </Link>
           </Button>
         </div>
       </section>
 
       {/* Testimonial / Contact Section */}
-      <section className="py-24 bg-background">
-        <div className="container">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="space-y-6 animate-fade-in">
-              <span className="text-secondary font-medium text-sm uppercase tracking-wider">{content.contact_section.subtitle}</span>
-              <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground">
+      <section className="py-12 sm:py-16 md:py-24 bg-background">
+        <div className="container px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
+            <div className="space-y-4 sm:space-y-6 animate-fade-in">
+              <span className="text-secondary font-medium text-xs sm:text-sm uppercase tracking-wider">{content.contact_section.subtitle}</span>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-foreground">
                 {content.contact_section.title}
               </h2>
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {content.contact_section.points.map((point, index) => (
-                  <div key={index} className="flex items-start gap-3">
-                    <CheckCircle className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
-                    <p className="text-muted-foreground">{point}</p>
+                  <div key={index} className="flex items-start gap-2 sm:gap-3">
+                    <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-primary flex-shrink-0 mt-0.5" />
+                    <p className="text-sm sm:text-base text-muted-foreground">{point}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="bg-muted rounded-3xl p-8 md:p-12 animate-slide-in-right">
-              <h3 className="font-display font-semibold text-xl text-foreground mb-4">
+            <div className="bg-muted rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-12 animate-slide-in-right">
+              <h3 className="font-display font-semibold text-lg sm:text-xl text-foreground mb-3 sm:mb-4">
                 {content.contact_section.help_title}
               </h3>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6">
                 {content.contact_section.help_description}
               </p>
-              <div className="space-y-3">
-                <p className="text-sm text-muted-foreground">
+              <div className="space-y-2 sm:space-y-3">
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   <strong>Téléphone:</strong> {content.contact_section.phone}
                 </p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   <strong>Adresse:</strong> {content.contact_section.address}
                 </p>
               </div>
-              <Button asChild className="mt-6">
+              <Button asChild className="mt-4 sm:mt-6 w-full sm:w-auto">
                 <Link to="/contact">
                   Contactez-nous
                   <ArrowRight className="h-4 w-4 ml-2" />
