@@ -51,5 +51,6 @@ jobs:
           passphrase: ${{ secrets.KEY_PASSPHRASE }}
           port: ${{ secrets.CPANEL_PORT }}
           script: |
-            mv /home/sbtechn/temp_lovable/* /home/sbtechn/public_html/
+            rm -rf /home/sbtechn/public_html/*
+            mv /home/sbtechn/temp_lovable/dist/* /home/sbtechn/public_html/
             rm -rf /home/sbtechn/temp_lovable/*
