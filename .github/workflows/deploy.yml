@@ -1,36 +1,11 @@
-name: Deploy Lovable to cPanel (Namcheap)
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build project
-        run: npm run build
-
-      - name: Upload files via SCP
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.CPANEL_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.CPANEL_SSH_KEY }}
-          passphrase: ${{ secrets.KEY_PASSPHRASE }}
-          port: ${{ secrets.CPANEL_PORT }}
-          source: "dist/*"
-          target: "/home/sbtechn/public_html"
+- name: Upload files via SCP
+  uses: appleboy/scp-action@v0.1.7
+  with:
+    host: ${{ secrets.CPANEL_HOST }}
+    username: ${{ secrets.SSH_USER }}
+    key: ${{ secrets.CPANEL_SSH_KEY }}
+    passphrase: ${{ secrets.KEY_PASSPHRASE }}
+    port: ${{ secrets.CPANEL_PORT }}
+    source: "dist/*"
+    target: "/home/sbtechn/public_html/"
+    overwrite: true
