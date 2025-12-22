@@ -1,43 +1,13 @@
-name: Deploy Website to Namecheap cPanel
 
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-      # 1️⃣ Checkout repository
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      # 2️⃣ Setup Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-
-      # 3️⃣ Install dependencies
-      - name: Install dependencies
-        run: npm install
-
-      # 4️⃣ Build project
-      - name: Build project
-        run: npm run build
-
-      # 5️⃣ Deploy via SCP using SSH Key
-      - name: Deploy to Namecheap cPanel
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.CPANEL_HOST }}
-          username: ${{ secrets.CPANEL_USER }}
-          key: ${{ secrets.CPANEL_SSH_KEY }}    # private key
-          port: ${{ secrets.CPANEL_PORT }}      # default 22
-          source: "dist/*"                      # build lokal ou
-          target: "/public_html/"               # folder sou server
-          rm: false                              # pa efase fichye ki pa nan build
-          overwrite: true                        # ranplase fichye ki deja egziste
-          debug: true                             # montre logs deploy
+- name: Deploy to cPanel
+  uses: appleboy/scp-action@v0.1.7
+  with:
+    host: ${{ secrets.CPANEL_HOST }}       # eg: server376.web-hosting.com
+    username: ${{ secrets.CPANEL_USER }}   # eg: ecehidmk
+    key: ${{ secrets.CPANEL_SSH_KEY }}     # secret ou te ajoute
+    port: 21098                            # port SFTP cPanel
+    source: "dist/*"                       # katab lokal build ou
+    target: "/public_html/"                # katab sou cPanel
+    rm: true                               # efase target avan upload
+    overwrite: true                        # overwrite fichye ki deja egziste
+    debug: true
