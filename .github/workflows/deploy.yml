@@ -1,29 +1,43 @@
-name: Deploy Website
+name: Deploy Website to Namecheap cPanel
 
 on:
   push:
     branches:
-      - main  # Lè w fè push nan branch main, deploy ap kouri
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout kòd la
+      # 1️⃣ Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Deploy sou server via SCP
-      - name: Deploy to server
+      # 2️⃣ Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      # 3️⃣ Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # 4️⃣ Build project
+      - name: Build project
+        run: npm run build
+
+      # 5️⃣ Deploy dist via SFTP using appleboy/scp-action
+      - name: Deploy to Namecheap
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.SERVER_HOST }}       # IP oswa hostname server ou
-          username: ${{ secrets.SERVER_USER }}   # User SSH ou
-          key: ${{ secrets.SERVER_SSH_KEY }}     # Private key SSH ou
-          port: 22                               # Nimewo port (pa mete ***)
-          source: "dist/"                        # Katab lokal ki gen build ou
-          target: "/var/www/html/"               # Katab sou server kote w ap upload
-          rm: true                               # Opsyon pou efase target avan upload
-          overwrite: true                        # Opsyon pou overwrite fichye ki deja egziste
-          debug: true                             # Pou wè detay si gen erè
+          host: ${{ secrets.CPANEL_HOST }}         # eg: example.com
+          username: ${{ secrets.CPANEL_USER }}     # cPanel username
+          password: ${{ secrets.CPANEL_PASSWORD }} # cPanel password
+          port: 22                                 # default SFTP/SSH port
+          source: "dist/*"                         # Katab lokal build ou
+          target: "/public_html/"                  # Katab sou cPanel kote sit la ye
+          rm: true                                 # efase target avan upload
+          overwrite: true                          # overwrite fichye ki deja egziste
+          debug: true
