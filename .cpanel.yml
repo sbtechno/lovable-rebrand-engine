@@ -1,6 +1,17 @@
 deployment:
   tasks:
     - export DEPLOY_DIR=public_html
+    - export TEMP_DIR=temp_lovable
+    - git pull origin main
+    - npm install
+    - npm run build
+    - mkdir -p $TEMP_DIR
+    - cp -r dist/* $TEMP_DIR/
+    - mv $TEMP_DIR/* $DEPLOY_DIR/
+    - rm -rf $TEMP_DIR
+deployment:
+  tasks:
+    - export DEPLOY_DIR=public_html
     - echo "Deploying to $DEPLOY_DIR"
     - rm -rf $DEPLOY_DIR/*
     - cp -r lovable-rebrand-engine/dist/* $DEPLOY_DIR/
