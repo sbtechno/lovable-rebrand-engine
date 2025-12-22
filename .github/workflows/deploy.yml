@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repo
+      # 1️⃣ Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -28,17 +28,16 @@ jobs:
       - name: Build project
         run: npm run build
 
-      # 5️⃣ Deploy via SFTP
+      # 5️⃣ Deploy via SCP using SSH Key
       - name: Deploy to Namecheap cPanel
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.CPANEL_HOST }}        # server hostname ou: server376.web-hosting.com
-          username: ${{ secrets.CPANEL_USER }}    # cPanel username ou: ecehidmk
-          password: ${{ secrets.CPANEL_PASSWORD }}# cPanel password ou
-          port: ${{ secrets.CPANEL_PORT }}        # SFTP port ou: 21098
-          source: "dist/*"                        # Katab lokal ki gen build ou
-          target: "/public_html/"                 # Katab sou cPanel kote sit la ye
-          rm: false                               # pa efase fichye ki pa nan build
-          overwrite: true                         # ranplase fichye ki deja egziste
-          debug: true                             # pou wè logs deploy
-
+          host: ${{ secrets.CPANEL_HOST }}
+          username: ${{ secrets.CPANEL_USER }}
+          key: ${{ secrets.CPANEL_SSH_KEY }}    # private key
+          port: ${{ secrets.CPANEL_PORT }}      # default 22
+          source: "dist/*"                      # build lokal ou
+          target: "/public_html/"               # folder sou server
+          rm: false                              # pa efase fichye ki pa nan build
+          overwrite: true                        # ranplase fichye ki deja egziste
+          debug: true                             # montre logs deploy
