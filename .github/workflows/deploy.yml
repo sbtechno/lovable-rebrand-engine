@@ -1,36 +1,29 @@
-name: Auto Deploy to Namecheap
+name: Deploy Website
 
 on:
   push:
     branches:
-      - main
+      - main  # Lè w fè push nan branch main, deploy ap kouri
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout kòd la
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build project
-        run: npm run build
-
-      - name: Deploy dist to Namecheap
+      # 2️⃣ Deploy sou server via SCP
+      - name: Deploy to server
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          port: ${{ secrets.SSH_PORT }}
-          key: ${{ secrets.SSH_KEY }}
-          source: "dist/*"
-          target: ${{ secrets.DEPLOY_PATH }}
-          strip_components: 1
+          host: ${{ secrets.SERVER_HOST }}       # IP oswa hostname server ou
+          username: ${{ secrets.SERVER_USER }}   # User SSH ou
+          key: ${{ secrets.SERVER_SSH_KEY }}     # Private key SSH ou
+          port: 22                               # Nimewo port (pa mete ***)
+          source: "dist/"                        # Katab lokal ki gen build ou
+          target: "/var/www/html/"               # Katab sou server kote w ap upload
+          rm: true                               # Opsyon pou efase target avan upload
+          overwrite: true                        # Opsyon pou overwrite fichye ki deja egziste
+          debug: true                             # Pou wè detay si gen erè
