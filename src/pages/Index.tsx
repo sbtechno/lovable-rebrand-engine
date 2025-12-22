@@ -185,15 +185,15 @@ const Index = () => {
       >
         <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/90 to-primary/70" />
         
-        <div className="container relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="text-primary-foreground space-y-8 animate-fade-in-up">
-              <div className="inline-flex items-center gap-2 bg-secondary/20 backdrop-blur-sm rounded-full px-4 py-2 text-sm">
-                <GraduationCap className="h-4 w-4" />
+        <div className="container relative z-10 px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <div className="text-primary-foreground space-y-6 md:space-y-8 animate-fade-in-up">
+              <div className="inline-flex items-center gap-2 bg-secondary/20 backdrop-blur-sm rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm">
+                <GraduationCap className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 <span>{content.hero.badge}</span>
               </div>
               
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-tight">
                 <span 
                   className={`inline-block transition-all duration-500 ${isAnimating ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}
                 >
@@ -203,20 +203,20 @@ const Index = () => {
                 </span>
               </h1>
               
-              <p className="text-lg md:text-xl text-primary-foreground/90 max-w-xl leading-relaxed">
+              <p className="text-base sm:text-lg md:text-xl text-primary-foreground/90 max-w-xl leading-relaxed">
                 {content.hero.description.split('Inscription en cours').map((part, i) => 
                   i === 0 ? part : <><strong className="text-secondary">Inscription en cours</strong>{part}</>
                 )}
               </p>
               
-              <div className="flex flex-wrap gap-4">
-                <Button asChild variant="hero" size="xl">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <Button asChild variant="hero" size="lg" className="sm:size-xl">
                   <Link to="/inscription">
                     {content.hero.cta_primary}
                     <ArrowRight className="h-5 w-5 ml-2" />
                   </Link>
                 </Button>
-                <Button asChild variant="heroOutline" size="xl">
+                <Button asChild variant="heroOutline" size="lg" className="sm:size-xl hidden sm:inline-flex">
                   <Link to="/programmes">{content.hero.cta_secondary}</Link>
                 </Button>
               </div>
