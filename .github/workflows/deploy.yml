@@ -3,7 +3,7 @@ name: Deploy Lovable to cPanel (Namcheap)
 on:
   push:
     branches:
-      - main  # Lanser workflow la chak fwa gen push sou main
+      - main
 
 jobs:
   build-and-deploy:
@@ -28,7 +28,7 @@ jobs:
       - name: Build project
         run: npm run build
 
-      # 5️⃣ Upload build nan folder temp sou cPanel
+      # 5️⃣ Upload build nan folder temp ki egziste deja
       - name: Upload build to temp folder
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -52,5 +52,4 @@ jobs:
           port: ${{ secrets.CPANEL_PORT }}
           script: |
             mv /home/sbtechn/temp_lovable/* /home/sbtechn/public_html/
-            rm -rf /home/sbtechn/temp_lovable
-
+            rm -rf /home/sbtechn/temp_lovable/*
