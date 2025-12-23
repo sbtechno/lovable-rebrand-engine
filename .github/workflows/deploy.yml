@@ -3,38 +3,32 @@ name: Deploy to cPanel
 on:
   push:
     branches:
-      - main
+      - main  # chak fwa ou fè push nan branch main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    # 1️⃣ Checkout repo a
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # 2️⃣ Install Node.js
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '20'
+        node-version: '18'
 
-    # 3️⃣ Install dependencies
     - name: Install dependencies
       run: npm install
 
-    # 4️⃣ Build project
     - name: Build project
       run: npm run build
 
-    # 5️⃣ Deploy to cPanel via FTP
-    - name: Deploy to cPanel
-      uses: SamKirkland/FTP-Deploy-Action@v4
-      with:
-        server: ${{ secrets.CPANEL_HOST }}
-        username: ${{ secrets.CPANEL_USER }}
-        password: ${{ secrets.CPANEL_PASSWORD }}
-        local-dir: dist/
-        server-dir: public_html/
-        port:  21098 
+    - name: Deploy to cPanel via FTP/SFTP
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y lftp
+        lftp -u ${{ secrets.CPANEL_USERNAME }},${{ secrets.CPANEL_PASSWORD }} -p ${{ secrets.CPANEL_PORT }} ${{ secrets.CPANEL_HOST }} <<EOF
+        mirror -R --delete --verbose dist/ public_html/
+        quit
+        EOF
