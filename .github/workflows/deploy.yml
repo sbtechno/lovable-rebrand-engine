@@ -1,11 +1,37 @@
-- name: Deploy via FTP
-  uses: SamKirkland/FTP-Deploy-Action@4.3.0
-  with:
-    server: ${{ secrets.CPANEL_HOST }}
-    username: ${{ secrets.CPANEL_USERNAME }}
-    password: ${{ secrets.CPANEL_PASSWORD }}
-    port: 21
-    protocol: ftp
-    local-dir: dist/
-    server-dir: ${{ secrets.CPANEL_SERVER_DIR }}/
-    log-level: verbose
+name: Deploy to cPanel via FTP
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: ${{ secrets.CPANEL_HOST }}
+          username: ${{ secrets.CPANEL_USERNAME }}
+          password: ${{ secrets.CPANEL_PASSWORD }}
+          port: ${{ secrets.CPANEL_PORT }}
+          protocol: ftp
+          local-dir: dist/
+          server-dir: ${{ secrets.CPANEL_SERVER_DIR }}/
+          log-level: verbose
