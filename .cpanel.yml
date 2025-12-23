@@ -1,32 +1,8 @@
-deployment:
-  tasks:
-    - export DEPLOY_DIR=public_html
-    - export TEMP_DIR=temp_lovable
-    - git pull origin main
-    - npm install
-    - npm run build
-    - mkdir -p $TEMP_DIR
-    - cp -r dist/* $TEMP_DIR/
-    - mv $TEMP_DIR/* $DEPLOY_DIR/
-    - rm -rf $TEMP_DIR
-deployment:
-  tasks:
-    - export DEPLOY_DIR=public_html
-    - echo "Deploying to $DEPLOY_DIR"
-    - rm -rf $DEPLOY_DIR/*
-    - cp -r lovable-rebrand-engine/dist/* $DEPLOY_DIR/
 ---
-# cPanel Deployment Config pou pwojè Lovable
 deployment:
-  # Sa cPanel ap kouri lè ou fè deploy
   tasks:
-    - echo "Starting deployment..."
     - export NODE_ENV=production
     - npm install
     - npm run build
-    - echo "Build finished, ready to deploy."
-
-  # Kote li pral mete fichye build yo
-  targets:
-    - /home/sbtechn/public_html
+    - cp -r dist/* /home/username/public_html/
 
