@@ -1,12 +1,12 @@
-name: Build and Deploy to cPanel
+name: Build & Deploy to cPanel
 
 on:
   push:
     branches:
-      - main
+      - main  # chak fwa ou fè push nan branch main
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,20 +18,32 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Clean workspace (optional)
+        run: |
+          rm -rf node_modules
+          rm -rf dist
+
       - name: Install dependencies
         run: npm install
 
       - name: Build project
         run: npm run build
 
-      - name: Deploy dist folder via FTP
+      - name: Verify dist folder
+        run: |
+          if [ ! -d "dist" ]; then
+            echo "Error: dist folder not found!"
+            exit 1
+          fi
+
+      - name: Deploy to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:
           server: ${{ secrets.CPANEL_HOST }}
           username: ${{ secrets.CPANEL_USERNAME }}
           password: ${{ secrets.CPANEL_PASSWORD }}
           port: ${{ secrets.CPANEL_PORT }}
-          local-dir: dist/          # folder build la
-          server-dir: public_html/  # folder sou cPanel
+          local-dir: dist/
+          server-dir: public_html/
           protocol: ftp
           dry-run: false
