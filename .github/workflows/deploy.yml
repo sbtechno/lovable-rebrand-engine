@@ -1,16 +1,16 @@
-name: Build & Deploy to cPanel
+name: Deploy to cPanel via SFTP
 
 on:
   push:
     branches:
-      - main  # chak fwa ou fè push nan branch main
+      - main
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Setup Node.js
@@ -18,32 +18,20 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Clean workspace (optional)
-        run: |
-          rm -rf node_modules
-          rm -rf dist
-
       - name: Install dependencies
         run: npm install
 
       - name: Build project
         run: npm run build
 
-      - name: Verify dist folder
-        run: |
-          if [ ! -d "dist" ]; then
-            echo "Error: dist folder not found!"
-            exit 1
-          fi
-
-      - name: Deploy to cPanel via FTP
+      - name: Deploy via SFTP
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:
           server: ${{ secrets.CPANEL_HOST }}
           username: ${{ secrets.CPANEL_USERNAME }}
           password: ${{ secrets.CPANEL_PASSWORD }}
           port: ${{ secrets.CPANEL_PORT }}
+          protocol: sftp
           local-dir: dist/
-          server-dir: public_html/
-          protocol: ftp
-          dry-run: false
+          server-dir: ${{ secrets.CPANEL_SERVER_DIR }}/
+          log-level: verbose
