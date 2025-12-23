@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { Menu, X, Phone, Mail, Clock, Facebook, Instagram, Linkedin } from "lucide-react";
+import { Menu, X, Phone, Mail, Clock, Facebook, Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import eceLogo from "@/assets/ece-logo-transparent.png";
@@ -64,7 +64,7 @@ export function Header() {
               <Instagram className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </a>
             <a href="#" className="hover:text-secondary transition-colors" aria-label="LinkedIn">
-              <Linkedin className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              
             </a>
           </div>
         </div>
