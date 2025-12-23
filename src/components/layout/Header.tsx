@@ -40,31 +40,31 @@ export function Header() {
   const isActive = (href: string) => location.pathname === href;
   return <header className="fixed top-0 left-0 right-0 z-50">
       {/* Top bar */}
-      <div className="bg-primary text-primary-foreground py-2">
-        <div className="container flex flex-wrap items-center justify-between text-sm">
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4" />
-              <span className="hidden sm:inline">Lun - Ven : 8h - 16h</span>
+      <div className="bg-primary text-primary-foreground py-1.5 sm:py-2">
+        <div className="container px-4 sm:px-6 flex items-center justify-between text-xs sm:text-sm">
+          <div className="flex items-center gap-3 sm:gap-6">
+            <div className="hidden sm:flex items-center gap-2">
+              <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span>Lun - Ven : 8h - 16h</span>
             </div>
-            <a href="tel:+50947308207" className="flex items-center gap-2 hover:text-secondary transition-colors">
-              <Phone className="h-4 w-4" />
-              <span className="hidden sm:inline">+509 42915226</span>
+            <a href="tel:+50947308207" className="flex items-center gap-1.5 sm:gap-2 hover:text-secondary transition-colors">
+              <Phone className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline">+509 42915226</span>
             </a>
-            <a href="mailto:contact@ecehaiti.com" className="flex items-center gap-2 hover:text-secondary transition-colors">
-              <Mail className="h-4 w-4" />
+            <a href="mailto:contact@ecehaiti.com" className="flex items-center gap-1.5 sm:gap-2 hover:text-secondary transition-colors">
+              <Mail className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               <span className="hidden md:inline">contact@ecehaiti.com</span>
             </a>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <a href="#" className="hover:text-secondary transition-colors" aria-label="Facebook">
-              <Facebook className="h-4 w-4" />
+              <Facebook className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </a>
             <a href="#" className="hover:text-secondary transition-colors" aria-label="Instagram">
-              <Instagram className="h-4 w-4" />
+              <Instagram className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </a>
             <a href="#" className="hover:text-secondary transition-colors" aria-label="LinkedIn">
-              <Linkedin className="h-4 w-4" />
+              <Linkedin className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </a>
           </div>
         </div>
@@ -72,10 +72,10 @@ export function Header() {
 
       {/* Main navigation */}
       <nav className="bg-card/95 backdrop-blur-md shadow-md">
-        <div className="container flex items-center justify-between py-2">
+        <div className="container px-4 sm:px-6 flex items-center justify-between py-1.5 sm:py-2">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <img src={eceLogo} alt="ECE - École de Commerce et d'Entrepreneuriat" className="h-16 md:h-20 w-auto object-contain" />
+            <img src={eceLogo} alt="ECE - École de Commerce et d'Entrepreneuriat" className="h-12 sm:h-16 md:h-20 w-auto object-contain" />
           </Link>
 
           {/* Desktop navigation */}
