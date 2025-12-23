@@ -19,7 +19,7 @@ jobs:
           username: ${{ secrets.CPANEL_USERNAME }}
           password: ${{ secrets.CPANEL_PASSWORD }}
           port: ${{ secrets.CPANEL_PORT }}
-          local-dir: dist/        # <- Fini ak /
-          server-dir: public_html
+          local-dir: dist/          # folder lokal fini ak /
+          server-dir: public_html/  # folder sou cPanel fini ak /
           protocol: ftp
           dry-run: false
