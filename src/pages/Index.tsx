@@ -180,22 +180,22 @@ const Index = () => {
     <Layout>
       {/* Hero Section */}
       <section 
-        className="relative min-h-[90vh] flex items-center overflow-hidden"
+        className="relative min-h-screen pt-28 sm:pt-32 md:pt-24 pb-16 sm:pb-20 flex items-center overflow-hidden"
         style={{ backgroundImage: `url(${heroBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/90 to-primary/70" />
         
-        <div className="container relative z-10 px-4 sm:px-6 lg:px-8">
+        <div className="container relative z-10 px-5 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            <div className="text-primary-foreground space-y-6 md:space-y-8 animate-fade-in-up">
+            <div className="text-primary-foreground space-y-5 sm:space-y-6 md:space-y-8 animate-fade-in-up text-left">
               <div className="inline-flex items-center gap-2 bg-secondary/20 backdrop-blur-sm rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm">
-                <GraduationCap className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                <span>{content.hero.badge}</span>
+                <GraduationCap className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
+                <span className="truncate">{content.hero.badge}</span>
               </div>
               
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-tight">
+              <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-tight min-h-[2.5em] sm:min-h-[2em]">
                 <span 
-                  className={`inline-block transition-all duration-500 ${isAnimating ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}
+                  className={`block transition-all duration-500 ${isAnimating ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}
                 >
                   {currentProgramIndex === 0 
                     ? "Devenir Manager ou Entrepreneur" 
@@ -203,20 +203,20 @@ const Index = () => {
                 </span>
               </h1>
               
-              <p className="text-base sm:text-lg md:text-xl text-primary-foreground/90 max-w-xl leading-relaxed">
+              <p className="text-sm sm:text-base md:text-lg lg:text-xl text-primary-foreground/90 max-w-xl leading-relaxed">
                 {content.hero.description.split('Inscription en cours').map((part, i) => 
                   i === 0 ? part : <><strong className="text-secondary">Inscription en cours</strong>{part}</>
                 )}
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Button asChild variant="hero" size="lg" className="sm:size-xl">
+              <div className="flex flex-col xs:flex-row gap-3 sm:gap-4 pt-2">
+                <Button asChild variant="hero" size="default" className="text-sm sm:text-base w-full xs:w-auto">
                   <Link to="/inscription">
                     {content.hero.cta_primary}
-                    <ArrowRight className="h-5 w-5 ml-2" />
+                    <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 ml-2" />
                   </Link>
                 </Button>
-                <Button asChild variant="heroOutline" size="lg" className="sm:size-xl hidden sm:inline-flex">
+                <Button asChild variant="heroOutline" size="default" className="text-sm sm:text-base w-full xs:w-auto">
                   <Link to="/programmes">{content.hero.cta_secondary}</Link>
                 </Button>
               </div>
@@ -237,7 +237,7 @@ const Index = () => {
 
         {/* Decorative wave */}
         <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
+          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-12 sm:h-auto">
             <path d="M0 120L60 105C120 90 240 60 360 52.5C480 45 600 60 720 67.5C840 75 960 75 1080 67.5C1200 60 1320 45 1380 37.5L1440 30V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="hsl(var(--background))"/>
           </svg>
         </div>
