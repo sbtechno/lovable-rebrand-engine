@@ -44,6 +44,63 @@ export type Database = {
         }
         Relationships: []
       }
+      footer_settings: {
+        Row: {
+          about_text: string
+          address: string
+          address_detail: string
+          copyright_text: string
+          created_at: string
+          developer_name: string
+          developer_url: string
+          email: string
+          facebook_url: string | null
+          id: string
+          instagram_url: string | null
+          linkedin_url: string | null
+          newsletter_subtitle: string
+          newsletter_title: string
+          phone: string
+          updated_at: string
+        }
+        Insert: {
+          about_text?: string
+          address?: string
+          address_detail?: string
+          copyright_text?: string
+          created_at?: string
+          developer_name?: string
+          developer_url?: string
+          email?: string
+          facebook_url?: string | null
+          id?: string
+          instagram_url?: string | null
+          linkedin_url?: string | null
+          newsletter_subtitle?: string
+          newsletter_title?: string
+          phone?: string
+          updated_at?: string
+        }
+        Update: {
+          about_text?: string
+          address?: string
+          address_detail?: string
+          copyright_text?: string
+          created_at?: string
+          developer_name?: string
+          developer_url?: string
+          email?: string
+          facebook_url?: string | null
+          id?: string
+          instagram_url?: string | null
+          linkedin_url?: string | null
+          newsletter_subtitle?: string
+          newsletter_title?: string
+          phone?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       gallery_images: {
         Row: {
           category: string
