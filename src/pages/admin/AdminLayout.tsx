@@ -13,7 +13,8 @@ import {
   BookOpen,
   Image,
   Quote,
-  FileText
+  FileText,
+  PanelBottom
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -59,6 +60,7 @@ const AdminLayout = () => {
     { href: '/admin/programmes', label: 'Programmes', icon: BookOpen },
     { href: '/admin/galerie', label: 'Galerie', icon: Image },
     { href: '/admin/temoignages', label: 'Témoignages', icon: Quote },
+    { href: '/admin/footer', label: 'Footer', icon: PanelBottom },
   ];
 
   const isActive = (path: string) => {

@@ -2,9 +2,62 @@ import { Link } from "react-router-dom";
 import { Facebook, Instagram, Linkedin, Phone, Mail, MapPin } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import eceLogo from "@/assets/ece-logo-transparent.png";
 
+interface FooterSettings {
+  about_text: string;
+  phone: string;
+  email: string;
+  address: string;
+  address_detail: string;
+  facebook_url: string | null;
+  instagram_url: string | null;
+  linkedin_url: string | null;
+  newsletter_title: string;
+  newsletter_subtitle: string;
+  copyright_text: string;
+  developer_name: string;
+  developer_url: string;
+}
+
+const defaultSettings: FooterSettings = {
+  about_text: "L'École de Commerce et d'Entrepreneuriat est une institution d'enseignement supérieur et universitaire, engagée dans la formation de la nouvelle génération d'acteurs économiques.",
+  phone: "+509 4730 8207",
+  email: "contact@ecehaiti.com",
+  address: "Port-de-Paix, Haïti",
+  address_detail: "48, angles des rues Benito Sylvain & Boisrond Tonnerre",
+  facebook_url: null,
+  instagram_url: null,
+  linkedin_url: null,
+  newsletter_title: "S'abonner à notre newsletter",
+  newsletter_subtitle: "Restez informé de nos dernières actualités",
+  copyright_text: "© 2025 Tous droits réservés ECE - École de Commerce et d'Entrepreneuriat",
+  developer_name: "Sb Techno",
+  developer_url: "https://sbtechno.space",
+};
+
 export function Footer() {
+  const { data: settings } = useQuery({
+    queryKey: ["footer-settings"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("footer_settings")
+        .select("*")
+        .single();
+
+      if (error) {
+        console.error("Error fetching footer settings:", error);
+        return defaultSettings;
+      }
+      return data as FooterSettings;
+    },
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+  });
+
+  const footerData = settings || defaultSettings;
+
   return (
     <footer className="bg-primary text-primary-foreground">
       <div className="container py-16 px-4 sm:px-6">
@@ -20,7 +73,7 @@ export function Footer() {
               />
             </div>
             <p className="text-primary-foreground/80 text-sm leading-relaxed">
-              L'École de Commerce et d'Entrepreneuriat est une institution d'enseignement supérieur et universitaire, engagée dans la formation de la nouvelle génération d'acteurs économiques.
+              {footerData.about_text}
             </p>
           </div>
 
@@ -84,36 +137,55 @@ export function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center gap-3">
                 <Phone className="h-4 w-4 text-secondary" />
-                <a href="tel:+50947308207" className="text-primary-foreground/80 hover:text-secondary transition-colors text-sm">
-                  +509 4730 8207
+                <a href={`tel:${footerData.phone.replace(/\s/g, '')}`} className="text-primary-foreground/80 hover:text-secondary transition-colors text-sm">
+                  {footerData.phone}
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-4 w-4 text-secondary" />
-                <a href="mailto:contact@ecehaiti.com" className="text-primary-foreground/80 hover:text-secondary transition-colors text-sm">
-                  contact@ecehaiti.com
+                <a href={`mailto:${footerData.email}`} className="text-primary-foreground/80 hover:text-secondary transition-colors text-sm">
+                  {footerData.email}
                 </a>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="h-4 w-4 text-secondary mt-0.5" />
                 <span className="text-primary-foreground/80 text-sm">
-                  Port-de-Paix, Haïti<br />
-                  48, angles des rues Benito Sylvain & Boisrond Tonnerre
+                  {footerData.address}<br />
+                  {footerData.address_detail}
                 </span>
               </li>
             </ul>
 
             {/* Social links */}
             <div className="flex items-center gap-4 pt-2">
-              <a href="#" className="text-primary-foreground/80 hover:text-secondary transition-colors" aria-label="Facebook">
-                <Facebook className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-primary-foreground/80 hover:text-secondary transition-colors" aria-label="Instagram">
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-primary-foreground/80 hover:text-secondary transition-colors" aria-label="LinkedIn">
-                <Linkedin className="h-5 w-5" />
-              </a>
+              {footerData.facebook_url && (
+                <a href={footerData.facebook_url} target="_blank" rel="noopener noreferrer" className="text-primary-foreground/80 hover:text-secondary transition-colors" aria-label="Facebook">
+                  <Facebook className="h-5 w-5" />
+                </a>
+              )}
+              {footerData.instagram_url && (
+                <a href={footerData.instagram_url} target="_blank" rel="noopener noreferrer" className="text-primary-foreground/80 hover:text-secondary transition-colors" aria-label="Instagram">
+                  <Instagram className="h-5 w-5" />
+                </a>
+              )}
+              {footerData.linkedin_url && (
+                <a href={footerData.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-primary-foreground/80 hover:text-secondary transition-colors" aria-label="LinkedIn">
+                  <Linkedin className="h-5 w-5" />
+                </a>
+              )}
+              {!footerData.facebook_url && !footerData.instagram_url && !footerData.linkedin_url && (
+                <>
+                  <a href="#" className="text-primary-foreground/80 hover:text-secondary transition-colors" aria-label="Facebook">
+                    <Facebook className="h-5 w-5" />
+                  </a>
+                  <a href="#" className="text-primary-foreground/80 hover:text-secondary transition-colors" aria-label="Instagram">
+                    <Instagram className="h-5 w-5" />
+                  </a>
+                  <a href="#" className="text-primary-foreground/80 hover:text-secondary transition-colors" aria-label="LinkedIn">
+                    <Linkedin className="h-5 w-5" />
+                  </a>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -122,8 +194,8 @@ export function Footer() {
         <div className="mt-12 pt-8 border-t border-primary-foreground/20">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div>
-              <h4 className="font-display font-semibold text-lg mb-1">S'abonner à notre newsletter</h4>
-              <p className="text-primary-foreground/70 text-sm">Restez informé de nos dernières actualités</p>
+              <h4 className="font-display font-semibold text-lg mb-1">{footerData.newsletter_title}</h4>
+              <p className="text-primary-foreground/70 text-sm">{footerData.newsletter_subtitle}</p>
             </div>
             <form className="flex flex-col sm:flex-row gap-3 w-full md:w-auto max-w-full">
               <Input
@@ -139,9 +211,9 @@ export function Footer() {
         {/* Copyright */}
         <div className="mt-8 pt-8 border-t border-primary-foreground/20 text-center">
           <p className="text-primary-foreground/70 text-sm">
-            © 2025 Tous droits réservés ECE - École de Commerce et d'Entrepreneuriat | Développé Par{" "}
-            <a href="https://sbtechno.space" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">
-              Sb Techno
+            {footerData.copyright_text} | Développé Par{" "}
+            <a href={footerData.developer_url} target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">
+              {footerData.developer_name}
             </a>
           </p>
         </div>
