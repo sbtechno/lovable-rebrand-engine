@@ -7,15 +7,16 @@ import eceLogo from "@/assets/ece-logo-transparent.png";
 export function Footer() {
   return (
     <footer className="bg-primary text-primary-foreground">
-      <div className="container py-16">
+      <div className="container py-16 px-4 sm:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* About section */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <img 
-                src={eceLogo} 
-                alt="ECE - École de Commerce et d'Entrepreneuriat" 
+              <img
+                src={eceLogo}
+                alt="ECE - École de Commerce et d'Entrepreneuriat"
                 className="h-20 w-auto object-contain bg-white/90 rounded-lg p-2"
+                loading="lazy"
               />
             </div>
             <p className="text-primary-foreground/80 text-sm leading-relaxed">
@@ -119,18 +120,18 @@ export function Footer() {
 
         {/* Newsletter */}
         <div className="mt-12 pt-8 border-t border-primary-foreground/20">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div>
               <h4 className="font-display font-semibold text-lg mb-1">S'abonner à notre newsletter</h4>
               <p className="text-primary-foreground/70 text-sm">Restez informé de nos dernières actualités</p>
             </div>
-            <form className="flex gap-3 w-full md:w-auto">
+            <form className="flex flex-col sm:flex-row gap-3 w-full md:w-auto max-w-full">
               <Input
                 type="email"
                 placeholder="Votre email"
-                className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 min-w-64"
+                className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 w-full sm:min-w-64 min-w-0"
               />
-              <Button variant="secondary">S'abonner</Button>
+              <Button variant="secondary" className="w-full sm:w-auto">S'abonner</Button>
             </form>
           </div>
         </div>
