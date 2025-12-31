@@ -75,14 +75,23 @@ const AdminLayout = () => {
   return (
     <div className="min-h-screen bg-muted/30">
       {/* Mobile header */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-card border-b h-16 flex items-center px-4">
+      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-card border-b h-16 flex items-center justify-between px-4">
+        <div className="flex items-center">
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="p-2 hover:bg-muted rounded-lg"
+          >
+            {sidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+          <span className="ml-4 font-display text-lg">Administration ECE</span>
+        </div>
         <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-2 hover:bg-muted rounded-lg"
+          onClick={handleSignOut}
+          className="p-2 hover:bg-destructive/10 text-destructive rounded-lg"
+          title="Déconnexion"
         >
-          {sidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          <LogOut className="h-5 w-5" />
         </button>
-        <span className="ml-4 font-display text-lg">Administration ECE</span>
       </header>
 
       {/* Sidebar */}
