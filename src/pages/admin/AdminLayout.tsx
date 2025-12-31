@@ -14,7 +14,8 @@ import {
   Image,
   Quote,
   FileText,
-  PanelBottom
+  PanelBottom,
+  Newspaper
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -60,6 +61,7 @@ const AdminLayout = () => {
     { href: '/admin/programmes', label: 'Programmes', icon: BookOpen },
     { href: '/admin/galerie', label: 'Galerie', icon: Image },
     { href: '/admin/temoignages', label: 'Témoignages', icon: Quote },
+    { href: '/admin/newsletter', label: 'Newsletter', icon: Newspaper },
     { href: '/admin/footer', label: 'Footer', icon: PanelBottom },
   ];
 
