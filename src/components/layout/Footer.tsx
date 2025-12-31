@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Facebook, Instagram, Linkedin, Phone, Mail, MapPin } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Phone, Mail, MapPin, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import eceLogo from "@/assets/ece-logo-transparent.png";
 
 interface FooterSettings {
@@ -39,6 +41,10 @@ const defaultSettings: FooterSettings = {
 };
 
 export function Footer() {
+  const { toast } = useToast();
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const { data: settings } = useQuery({
     queryKey: ["footer-settings"],
     queryFn: async () => {
@@ -53,10 +59,67 @@ export function Footer() {
       }
       return data as FooterSettings;
     },
-    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    staleTime: 1000 * 60 * 5,
   });
 
   const footerData = settings || defaultSettings;
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email.trim()) {
+      toast({
+        title: "Erè",
+        description: "Tanpri antre yon adrès imèl valid.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      toast({
+        title: "Erè",
+        description: "Tanpri antre yon adrès imèl valid.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    
+    try {
+      const { error } = await supabase
+        .from("newsletter_subscribers")
+        .insert({ email: email.trim().toLowerCase() });
+
+      if (error) {
+        if (error.code === "23505") {
+          toast({
+            title: "Deja enskri",
+            description: "Adrès imèl sa a deja enskri nan newsletter nou an.",
+          });
+        } else {
+          throw error;
+        }
+      } else {
+        toast({
+          title: "Mèsi!",
+          description: "Ou enskri nan newsletter nou an avèk siksè!",
+        });
+        setEmail("");
+      }
+    } catch (error) {
+      console.error("Newsletter subscription error:", error);
+      toast({
+        title: "Erè",
+        description: "Gen yon erè ki fèt. Tanpri eseye ankò.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <footer className="bg-primary text-primary-foreground">
@@ -197,13 +260,18 @@ export function Footer() {
               <h4 className="font-display font-semibold text-lg mb-1">{footerData.newsletter_title}</h4>
               <p className="text-primary-foreground/70 text-sm">{footerData.newsletter_subtitle}</p>
             </div>
-            <form className="flex flex-col sm:flex-row gap-3 w-full md:w-auto max-w-full">
+            <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-3 w-full md:w-auto max-w-full">
               <Input
                 type="email"
                 placeholder="Votre email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={isSubmitting}
                 className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 w-full sm:min-w-64 min-w-0"
               />
-              <Button variant="newsletter" type="submit" className="w-full sm:w-auto shrink-0">S'abonner</Button>
+              <Button variant="newsletter" type="submit" disabled={isSubmitting} className="w-full sm:w-auto shrink-0">
+                {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "S'abonner"}
+              </Button>
             </form>
           </div>
         </div>
