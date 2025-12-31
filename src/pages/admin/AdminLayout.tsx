@@ -161,8 +161,39 @@ const AdminLayout = () => {
         />
       )}
 
+      {/* Desktop header */}
+      <header className="hidden lg:flex fixed top-0 left-64 right-0 z-50 bg-card border-b h-16 items-center justify-between px-6">
+        <div className="text-sm text-muted-foreground">
+          {user.email}
+          {isAdmin && (
+            <span className="ml-2 px-2 py-0.5 bg-primary/10 text-primary text-xs rounded-full">
+              Admin
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/')}
+          >
+            <Home className="h-4 w-4 mr-2" />
+            Voir le site
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+            onClick={handleSignOut}
+          >
+            <LogOut className="h-4 w-4 mr-2" />
+            Déconnexion
+          </Button>
+        </div>
+      </header>
+
       {/* Main content */}
-      <main className="lg:ml-64 min-h-screen pt-16 lg:pt-0">
+      <main className="lg:ml-64 min-h-screen pt-16">
         <div className="p-6">
           <Outlet />
         </div>
