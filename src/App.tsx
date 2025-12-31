@@ -24,6 +24,7 @@ import AdminGallery from "./pages/admin/AdminGallery";
 import AdminTestimonials from "./pages/admin/AdminTestimonials";
 import AdminContent from "./pages/admin/AdminContent";
 import AdminFooter from "./pages/admin/AdminFooter";
+import AdminNewsletter from "./pages/admin/AdminNewsletter";
 
 const queryClient = new QueryClient();
 
@@ -53,6 +54,7 @@ const App = () => (
               <Route path="programmes" element={<AdminPrograms />} />
               <Route path="galerie" element={<AdminGallery />} />
               <Route path="temoignages" element={<AdminTestimonials />} />
+              <Route path="newsletter" element={<AdminNewsletter />} />
               <Route path="footer" element={<AdminFooter />} />
             </Route>
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
