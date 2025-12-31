@@ -203,7 +203,7 @@ export function Footer() {
                 placeholder="Votre email"
                 className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 w-full sm:min-w-64 min-w-0"
               />
-              <Button variant="secondary" className="w-full sm:w-auto">S'abonner</Button>
+              <Button variant="newsletter" type="submit" className="w-full sm:w-auto shrink-0">S'abonner</Button>
             </form>
           </div>
         </div>

@@ -25,6 +25,8 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground shadow-gold hover:shadow-xl hover:-translate-y-1 font-semibold",
         heroOutline:
           "border-2 border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 backdrop-blur-sm",
+        newsletter:
+          "bg-secondary text-primary font-semibold shadow-md hover:bg-secondary/90 hover:shadow-lg hover:-translate-y-0.5",
       },
       size: {
         default: "h-11 px-6 py-2.5",
