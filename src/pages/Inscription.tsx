@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { GraduationCap, CheckCircle, ArrowRight, User, Mail, Phone, Calendar, BookOpen, DollarSign, CreditCard, Building2, Smartphone } from "lucide-react";
+import { GraduationCap, CheckCircle, ArrowRight, User, Mail, Phone, Calendar, BookOpen, DollarSign, CreditCard, Building2, Smartphone, Upload, FileCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
@@ -60,9 +60,31 @@ const programs = [
 ];
 
 const paymentMethods = [
-  { value: "moncash", label: "Mon Cash", icon: Smartphone },
-  { value: "natcash", label: "Natcash", icon: Smartphone },
-  { value: "virement", label: "Virement Bancaire", icon: Building2 },
+  { 
+    value: "moncash", 
+    label: "Mon Cash", 
+    icon: Smartphone,
+    details: "36906883",
+    owner: "Minerve MARC"
+  },
+  { 
+    value: "natcash", 
+    label: "Natcash", 
+    icon: Smartphone,
+    details: "3367-4964",
+    owner: "Minerve MARC"
+  },
+  { 
+    value: "virement", 
+    label: "Virement Bancaire", 
+    icon: Building2,
+    details: "UNIBANK",
+    accounts: [
+      { currency: "GDES", number: "650-2815-184 70 123" },
+      { currency: "USD", number: "650-2816-3095 8286" }
+    ],
+    owner: "Manuelita FLORVIL"
+  },
 ];
 
 const inscriptionSchema = z.object({
@@ -97,8 +119,11 @@ const Inscription = () => {
     paymentMethod: "",
     acceptTerms: false,
   });
+  const [paymentProofFile, setPaymentProofFile] = useState<File | null>(null);
+  const [uploadingProof, setUploadingProof] = useState(false);
 
   const selectedProgram = programs.find(p => p.value === formData.program);
+  const selectedPaymentMethod = paymentMethods.find(p => p.value === formData.paymentMethod);
   // Honeypot field for spam prevention - bots will fill this, humans won't see it
   const [honeypot, setHoneypot] = useState("");
 
@@ -157,6 +182,39 @@ const Inscription = () => {
 
     try {
       const validatedData = result.data;
+      
+      // Upload payment proof if provided
+      let paymentProofUrl: string | null = null;
+      if (paymentProofFile) {
+        setUploadingProof(true);
+        const fileExt = paymentProofFile.name.split('.').pop();
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const filePath = `payment-proofs/${fileName}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('site-images')
+          .upload(filePath, paymentProofFile);
+        
+        if (uploadError) {
+          console.error('Upload error:', uploadError);
+          toast({
+            title: "Erreur d'upload",
+            description: "Impossible de télécharger la preuve de paiement. Veuillez réessayer.",
+            variant: "destructive",
+          });
+          setUploadingProof(false);
+          setIsSubmitting(false);
+          return;
+        }
+        
+        const { data: urlData } = supabase.storage
+          .from('site-images')
+          .getPublicUrl(filePath);
+        
+        paymentProofUrl = urlData.publicUrl;
+        setUploadingProof(false);
+      }
+      
       const { error } = await supabase.from("inscriptions").insert({
         nom: validatedData.lastName,
         prenom: validatedData.firstName,
@@ -167,6 +225,8 @@ const Inscription = () => {
         adresse: validatedData.address || null,
         programme: validatedData.program,
         niveau_etude: validatedData.previousEducation || null,
+        payment_method: validatedData.paymentMethod,
+        payment_proof_url: paymentProofUrl,
       });
 
       if (error) {
@@ -532,23 +592,126 @@ const Inscription = () => {
                     </RadioGroup>
                     {errors.paymentMethod && <p className="text-sm text-destructive">{errors.paymentMethod}</p>}
                     
-                    {formData.paymentMethod && (
-                      <div className="bg-muted rounded-xl p-4 text-sm">
+                    {selectedPaymentMethod && (
+                      <div className="bg-gradient-to-br from-primary/5 to-secondary/5 border border-primary/20 rounded-xl p-4 space-y-3">
+                        <div className="flex items-center gap-2 text-primary font-semibold">
+                          <DollarSign className="h-5 w-5" />
+                          <span>Informations de paiement - {selectedPaymentMethod.label}</span>
+                        </div>
+                        
                         {formData.paymentMethod === "moncash" && (
-                          <p className="text-muted-foreground">
-                            <span className="font-semibold text-foreground">Mon Cash:</span> Vous recevrez les instructions de paiement par SMS après validation de votre inscription.
-                          </p>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Numéro:</span>
+                              <span className="font-bold text-foreground">36906883</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Nom:</span>
+                              <span className="font-medium text-foreground">Minerve MARC</span>
+                            </div>
+                          </div>
                         )}
+                        
                         {formData.paymentMethod === "natcash" && (
-                          <p className="text-muted-foreground">
-                            <span className="font-semibold text-foreground">Natcash:</span> Vous recevrez les instructions de paiement par SMS après validation de votre inscription.
-                          </p>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Numéro:</span>
+                              <span className="font-bold text-foreground">3367-4964</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Nom:</span>
+                              <span className="font-medium text-foreground">Minerve MARC</span>
+                            </div>
+                          </div>
                         )}
+                        
                         {formData.paymentMethod === "virement" && (
-                          <p className="text-muted-foreground">
-                            <span className="font-semibold text-foreground">Virement Bancaire:</span> Les coordonnées bancaires vous seront communiquées par email après validation de votre inscription.
-                          </p>
+                          <div className="space-y-3 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Banque:</span>
+                              <span className="font-medium text-foreground">UNIBANK</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Titulaire:</span>
+                              <span className="font-medium text-foreground">Manuelita FLORVIL</span>
+                            </div>
+                            <div className="border-t border-border pt-2 space-y-2">
+                              <div className="flex justify-between">
+                                <span className="text-muted-foreground">Compte GDES:</span>
+                                <span className="font-bold text-foreground">650-2815-184 70 123</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-muted-foreground">Compte USD:</span>
+                                <span className="font-bold text-foreground">650-2816-3095 8286</span>
+                              </div>
+                            </div>
+                          </div>
                         )}
+                        
+                        <p className="text-xs text-muted-foreground italic border-t border-border pt-2">
+                          Effectuez le paiement et téléchargez la preuve ci-dessous.
+                        </p>
+                      </div>
+                    )}
+                    
+                    {/* Payment Proof Upload */}
+                    {formData.paymentMethod && (
+                      <div className="space-y-3">
+                        <Label className="flex items-center gap-2">
+                          <Upload className="h-4 w-4 text-muted-foreground" />
+                          Preuve de paiement (facultatif)
+                        </Label>
+                        <div className="border-2 border-dashed border-muted-foreground/25 rounded-xl p-6 text-center hover:border-primary/50 transition-colors">
+                          <input
+                            type="file"
+                            id="paymentProof"
+                            accept="image/*,.pdf"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                if (file.size > 5 * 1024 * 1024) {
+                                  toast({
+                                    title: "Fichier trop volumineux",
+                                    description: "La taille maximale est de 5 Mo.",
+                                    variant: "destructive",
+                                  });
+                                  return;
+                                }
+                                setPaymentProofFile(file);
+                              }
+                            }}
+                            className="hidden"
+                          />
+                          <label htmlFor="paymentProof" className="cursor-pointer space-y-2 block">
+                            {paymentProofFile ? (
+                              <div className="flex items-center justify-center gap-2 text-primary">
+                                <FileCheck className="h-8 w-8" />
+                                <span className="font-medium">{paymentProofFile.name}</span>
+                              </div>
+                            ) : (
+                              <>
+                                <Upload className="h-8 w-8 mx-auto text-muted-foreground" />
+                                <p className="text-sm text-muted-foreground">
+                                  Cliquez pour télécharger votre preuve de paiement
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  Image ou PDF, max 5 Mo
+                                </p>
+                              </>
+                            )}
+                          </label>
+                          {paymentProofFile && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              className="mt-2"
+                              onClick={() => setPaymentProofFile(null)}
+                            >
+                              Supprimer
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     )}
                   </div>
@@ -571,11 +734,11 @@ const Inscription = () => {
                   <Button type="button" variant="outline" onClick={prevStep}>
                     Retour
                   </Button>
-                  <Button type="submit" size="lg" disabled={isSubmitting || !formData.acceptTerms || !formData.program || !formData.paymentMethod}>
-                    {isSubmitting ? (
+                  <Button type="submit" size="lg" disabled={isSubmitting || uploadingProof || !formData.acceptTerms || !formData.program || !formData.paymentMethod}>
+                    {isSubmitting || uploadingProof ? (
                       <>
                         <span className="animate-spin mr-2">⏳</span>
-                        Inscription en cours...
+                        {uploadingProof ? "Téléchargement..." : "Inscription en cours..."}
                       </>
                     ) : (
                       <>

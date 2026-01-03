@@ -25,9 +25,15 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { Eye, Trash2, Download, RefreshCw } from 'lucide-react';
+import { Eye, Trash2, Download, RefreshCw, ExternalLink, CreditCard } from 'lucide-react';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+
+const paymentMethodLabels: Record<string, string> = {
+  moncash: 'Mon Cash',
+  natcash: 'Natcash',
+  virement: 'Virement Bancaire',
+};
 
 interface Inscription {
   id: string;
@@ -42,6 +48,8 @@ interface Inscription {
   niveau_etude: string | null;
   statut: string;
   created_at: string;
+  payment_method: string | null;
+  payment_proof_url: string | null;
 }
 
 const Inscriptions = () => {
@@ -111,13 +119,15 @@ const Inscriptions = () => {
   };
 
   const exportCSV = () => {
-    const headers = ['Nom', 'Prénom', 'Email', 'Téléphone', 'Programme', 'Statut', 'Date'];
+    const headers = ['Nom', 'Prénom', 'Email', 'Téléphone', 'Programme', 'Mode de paiement', 'Preuve de paiement', 'Statut', 'Date'];
     const rows = inscriptions.map(i => [
       i.nom,
       i.prenom,
       i.email,
       i.telephone,
       i.programme,
+      i.payment_method ? (paymentMethodLabels[i.payment_method] || i.payment_method) : '',
+      i.payment_proof_url || '',
       i.statut,
       format(new Date(i.created_at), 'dd/MM/yyyy', { locale: fr }),
     ]);
@@ -177,6 +187,7 @@ const Inscriptions = () => {
                   <TableHead>Nom</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Programme</TableHead>
+                  <TableHead>Paiement</TableHead>
                   <TableHead>Statut</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
@@ -185,7 +196,7 @@ const Inscriptions = () => {
               <TableBody>
                 {inscriptions.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                    <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                       Aucune inscription pour le moment
                     </TableCell>
                   </TableRow>
@@ -197,6 +208,30 @@ const Inscriptions = () => {
                       </TableCell>
                       <TableCell>{inscription.email}</TableCell>
                       <TableCell>{inscription.programme}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1">
+                          {inscription.payment_method ? (
+                            <>
+                              <CreditCard className="h-3 w-3 text-muted-foreground" />
+                              <span className="text-xs">
+                                {paymentMethodLabels[inscription.payment_method] || inscription.payment_method}
+                              </span>
+                              {inscription.payment_proof_url && (
+                                <a
+                                  href={inscription.payment_proof_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-primary hover:underline ml-1"
+                                >
+                                  <ExternalLink className="h-3 w-3" />
+                                </a>
+                              )}
+                            </>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">-</span>
+                          )}
+                        </div>
+                      </TableCell>
                       <TableCell>
                         <Select
                           value={inscription.statut}
@@ -300,6 +335,35 @@ const Inscriptions = () => {
                     <p className="font-medium">{selectedInscription.adresse}</p>
                   </div>
                 )}
+                
+                {/* Payment Information */}
+                {selectedInscription.payment_method && (
+                  <div className="col-span-2 border-t pt-4 mt-2">
+                    <p className="text-sm text-muted-foreground flex items-center gap-1">
+                      <CreditCard className="h-4 w-4" />
+                      Mode de paiement
+                    </p>
+                    <p className="font-medium">
+                      {paymentMethodLabels[selectedInscription.payment_method] || selectedInscription.payment_method}
+                    </p>
+                  </div>
+                )}
+                
+                {selectedInscription.payment_proof_url && (
+                  <div className="col-span-2">
+                    <p className="text-sm text-muted-foreground">Preuve de paiement</p>
+                    <a
+                      href={selectedInscription.payment_proof_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-primary hover:underline font-medium"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                      Voir la preuve
+                    </a>
+                  </div>
+                )}
+                
                 <div>
                   <p className="text-sm text-muted-foreground">Statut</p>
                   {getStatusBadge(selectedInscription.statut)}
