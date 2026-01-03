@@ -5,19 +5,64 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { GraduationCap, CheckCircle, ArrowRight, User, Mail, Phone, Calendar, BookOpen } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { GraduationCap, CheckCircle, ArrowRight, User, Mail, Phone, Calendar, BookOpen, DollarSign, CreditCard, Building2, Smartphone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 
 const programs = [
-  { value: "business-administration", label: "Business Administration" },
-  { value: "comptabilite", label: "Comptabilité" },
-  { value: "entrepreneuriat", label: "Entrepreneuriat" },
-  { value: "gestion-secretariat", label: "Gestion du Secrétariat" },
-  { value: "ressources-humaines", label: "Gestion des Ressources Humaines" },
-  { value: "management-information", label: "Management de l'Information" },
-  { value: "marketing-vente", label: "Marketing de Vente" },
+  { 
+    value: "mba", 
+    label: "MBA (Master of Business Administration)",
+    duration: "15 mois",
+    inscription: "60 USD",
+    formation: "2 300 USD",
+    reduction: "30% à 50% selon le profil",
+    note: "Paiement possible en mensualités flexibles"
+  },
+  { 
+    value: "business-class", 
+    label: "Business Class Certificated (Certificat Premium)",
+    duration: "45 heures par classe",
+    inscription: "10 USD",
+    formation: "115 USD par classe / 150 USD double classe",
+    reduction: null,
+    note: null
+  },
+  { 
+    value: "licence", 
+    label: "Programme de Licence",
+    duration: "3 ans",
+    inscription: "2 000 Gourdes",
+    formation: "17 500 Gourdes (admission) + 3 500 Gourdes/mois",
+    reduction: null,
+    note: "Mensualité: 3 500 Gourdes"
+  },
+  { 
+    value: "certification", 
+    label: "Programme de Certification",
+    duration: "Variable",
+    inscription: "40 USD",
+    formation: "400 USD",
+    reduction: null,
+    note: null
+  },
+  { 
+    value: "perfectionnement", 
+    label: "Programme de Perfectionnement de Cadres",
+    duration: "Variable",
+    inscription: "2 000 Gourdes",
+    formation: "27 000 Gourdes",
+    reduction: null,
+    note: null
+  },
+];
+
+const paymentMethods = [
+  { value: "moncash", label: "Mon Cash", icon: Smartphone },
+  { value: "natcash", label: "Natcash", icon: Smartphone },
+  { value: "virement", label: "Virement Bancaire", icon: Building2 },
 ];
 
 const inscriptionSchema = z.object({
@@ -30,6 +75,7 @@ const inscriptionSchema = z.object({
   address: z.string().max(200, "L'adresse ne peut pas dépasser 200 caractères").optional(),
   program: z.string().min(1, "Veuillez sélectionner un programme"),
   previousEducation: z.string().optional(),
+  paymentMethod: z.string().min(1, "Veuillez sélectionner un mode de paiement"),
   acceptTerms: z.literal(true, { errorMap: () => ({ message: "Vous devez accepter les conditions" }) }),
 });
 
@@ -48,8 +94,11 @@ const Inscription = () => {
     address: "",
     program: "",
     previousEducation: "",
+    paymentMethod: "",
     acceptTerms: false,
   });
+
+  const selectedProgram = programs.find(p => p.value === formData.program);
   // Honeypot field for spam prevention - bots will fill this, humans won't see it
   const [honeypot, setHoneypot] = useState("");
 
@@ -387,7 +436,50 @@ const Inscription = () => {
                         ))}
                       </SelectContent>
                     </Select>
+                    {errors.program && <p className="text-sm text-destructive">{errors.program}</p>}
                   </div>
+
+                  {/* Program Pricing Info */}
+                  {selectedProgram && (
+                    <div className="bg-gradient-to-br from-primary/5 to-secondary/5 border border-primary/20 rounded-2xl p-6 space-y-4">
+                      <div className="flex items-center gap-2 text-primary font-semibold">
+                        <DollarSign className="h-5 w-5" />
+                        <span>Détails des frais - {selectedProgram.label}</span>
+                      </div>
+                      <div className="grid md:grid-cols-2 gap-4 text-sm">
+                        <div className="space-y-2">
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Durée:</span>
+                            <span className="font-medium text-foreground">{selectedProgram.duration}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Frais d'inscription:</span>
+                            <span className="font-medium text-foreground">{selectedProgram.inscription}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Frais de formation:</span>
+                            <span className="font-medium text-foreground">{selectedProgram.formation}</span>
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          {selectedProgram.reduction && (
+                            <div className="bg-secondary/20 text-secondary-foreground px-3 py-2 rounded-lg">
+                              <span className="text-xs font-semibold uppercase">Réduction disponible</span>
+                              <p className="text-sm font-medium">{selectedProgram.reduction}</p>
+                            </div>
+                          )}
+                          {selectedProgram.note && (
+                            <div className="bg-muted px-3 py-2 rounded-lg">
+                              <p className="text-sm text-muted-foreground">{selectedProgram.note}</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <p className="text-xs text-muted-foreground italic border-t border-border pt-3">
+                        Des facilités de paiement sont disponibles pour chaque programme.
+                      </p>
+                    </div>
+                  )}
 
                   <div className="space-y-2">
                     <Label htmlFor="previousEducation">Niveau d'études précédent</Label>
@@ -405,6 +497,60 @@ const Inscription = () => {
                         <SelectItem value="autre">Autre</SelectItem>
                       </SelectContent>
                     </Select>
+                  </div>
+
+                  {/* Payment Method Selection */}
+                  <div className="space-y-3">
+                    <Label className="flex items-center gap-2">
+                      <CreditCard className="h-4 w-4 text-muted-foreground" />
+                      Mode de paiement préféré *
+                    </Label>
+                    <RadioGroup
+                      value={formData.paymentMethod}
+                      onValueChange={(value) => handleSelectChange("paymentMethod", value)}
+                      className="grid grid-cols-1 md:grid-cols-3 gap-4"
+                    >
+                      {paymentMethods.map((method) => {
+                        const IconComponent = method.icon;
+                        return (
+                          <div key={method.value}>
+                            <RadioGroupItem
+                              value={method.value}
+                              id={method.value}
+                              className="peer sr-only"
+                            />
+                            <Label
+                              htmlFor={method.value}
+                              className="flex flex-col items-center justify-center rounded-xl border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 cursor-pointer transition-all"
+                            >
+                              <IconComponent className="h-8 w-8 mb-2 text-primary" />
+                              <span className="font-medium">{method.label}</span>
+                            </Label>
+                          </div>
+                        );
+                      })}
+                    </RadioGroup>
+                    {errors.paymentMethod && <p className="text-sm text-destructive">{errors.paymentMethod}</p>}
+                    
+                    {formData.paymentMethod && (
+                      <div className="bg-muted rounded-xl p-4 text-sm">
+                        {formData.paymentMethod === "moncash" && (
+                          <p className="text-muted-foreground">
+                            <span className="font-semibold text-foreground">Mon Cash:</span> Vous recevrez les instructions de paiement par SMS après validation de votre inscription.
+                          </p>
+                        )}
+                        {formData.paymentMethod === "natcash" && (
+                          <p className="text-muted-foreground">
+                            <span className="font-semibold text-foreground">Natcash:</span> Vous recevrez les instructions de paiement par SMS après validation de votre inscription.
+                          </p>
+                        )}
+                        {formData.paymentMethod === "virement" && (
+                          <p className="text-muted-foreground">
+                            <span className="font-semibold text-foreground">Virement Bancaire:</span> Les coordonnées bancaires vous seront communiquées par email après validation de votre inscription.
+                          </p>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex items-start gap-3 p-4 bg-muted rounded-xl">
@@ -425,7 +571,7 @@ const Inscription = () => {
                   <Button type="button" variant="outline" onClick={prevStep}>
                     Retour
                   </Button>
-                  <Button type="submit" size="lg" disabled={isSubmitting || !formData.acceptTerms || !formData.program}>
+                  <Button type="submit" size="lg" disabled={isSubmitting || !formData.acceptTerms || !formData.program || !formData.paymentMethod}>
                     {isSubmitting ? (
                       <>
                         <span className="animate-spin mr-2">⏳</span>
