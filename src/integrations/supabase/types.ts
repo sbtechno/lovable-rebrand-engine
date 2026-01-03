@@ -147,6 +147,8 @@ export type Database = {
           lieu_naissance: string | null
           niveau_etude: string | null
           nom: string
+          payment_method: string | null
+          payment_proof_url: string | null
           prenom: string
           programme: string
           statut: string
@@ -162,6 +164,8 @@ export type Database = {
           lieu_naissance?: string | null
           niveau_etude?: string | null
           nom: string
+          payment_method?: string | null
+          payment_proof_url?: string | null
           prenom: string
           programme: string
           statut?: string
@@ -177,6 +181,8 @@ export type Database = {
           lieu_naissance?: string | null
           niveau_etude?: string | null
           nom?: string
+          payment_method?: string | null
+          payment_proof_url?: string | null
           prenom?: string
           programme?: string
           statut?: string
