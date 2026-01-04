@@ -75,7 +75,7 @@ export function Header() {
         <div className="container px-4 sm:px-6 flex items-center justify-between py-1.5 sm:py-2">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <img src={eceLogo} alt="ECE - École de Commerce et d'Entrepreneuriat" className="h-12 sm:h-16 md:h-20 w-auto object-contain" />
+            <img src={eceLogo} alt="ECE - École de Commerce et d'Entrepreneuriat" className="h-16 sm:h-16 md:h-20 w-auto object-contain" />
           </Link>
 
           {/* Desktop navigation */}
