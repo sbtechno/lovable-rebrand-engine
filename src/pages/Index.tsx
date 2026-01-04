@@ -180,7 +180,7 @@ const Index = () => {
     <Layout>
       {/* Hero Section */}
       <section 
-        className="relative min-h-screen pt-28 sm:pt-32 md:pt-24 pb-16 sm:pb-20 flex items-center overflow-hidden"
+        className="relative min-h-screen pt-20 sm:pt-32 md:pt-24 pb-12 sm:pb-20 flex items-center overflow-hidden"
         style={{ backgroundImage: `url(${heroBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/90 to-primary/70" />
@@ -222,13 +222,13 @@ const Index = () => {
               </div>
             </div>
             
-            <div className="hidden lg:block relative animate-fade-in stagger-3">
+            <div className="relative animate-fade-in stagger-3 mt-8 lg:mt-0">
               <div className="relative">
                 <div className="absolute -inset-4 bg-secondary/30 rounded-full blur-3xl" />
                 <img
                   src={graduateStudent}
                   alt="Étudiante diplômée ECE"
-                  className="relative z-10 w-full max-w-md mx-auto drop-shadow-2xl animate-float"
+                  className="relative z-10 w-full max-w-[200px] sm:max-w-xs lg:max-w-md mx-auto drop-shadow-2xl animate-float"
                 />
               </div>
             </div>
