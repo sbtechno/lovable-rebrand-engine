@@ -45,7 +45,7 @@ export function Header() {
           <div className="flex items-center gap-3 sm:gap-6">
             <div className="hidden sm:flex items-center gap-2">
               <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              <span>Lun - Ven : 8h - 16h</span>
+              <span>Lun - Ven : 8h - 4h</span>
             </div>
             <a href="tel:+50947308207" className="flex items-center gap-1.5 sm:gap-2 hover:text-secondary transition-colors">
               <Phone className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
@@ -80,7 +80,7 @@ export function Header() {
 
           {/* Desktop navigation */}
           <div className="hidden lg:flex items-center gap-1">
-            {navigation.map(item => item.children ? <div key={item.name} className="relative" onMouseEnter={() => setDropdownOpen(true)} onMouseLeave={() => setDropdownOpen(false)}>
+            {navigation.map((item) => item.children ? <div key={item.name} className="relative" onMouseEnter={() => setDropdownOpen(true)} onMouseLeave={() => setDropdownOpen(false)}>
                   <button className="px-4 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors flex items-center gap-1">
                     {item.name}
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -88,7 +88,7 @@ export function Header() {
                     </svg>
                   </button>
                   {dropdownOpen && <div className="absolute top-full left-0 bg-card rounded-lg shadow-xl border border-border py-2 min-w-48 animate-fade-in">
-                      {item.children.map(child => <Link key={child.name} to={child.href} className="block px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+                      {item.children.map((child) => <Link key={child.name} to={child.href} className="block px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
                           {child.name}
                         </Link>)}
                     </div>}
@@ -113,11 +113,11 @@ export function Header() {
         {/* Mobile menu */}
         {mobileMenuOpen && <div className="lg:hidden bg-card border-t border-border animate-fade-in">
             <div className="container py-4 space-y-2">
-              {navigation.map(item => item.children ? <div key={item.name} className="space-y-1">
+              {navigation.map((item) => item.children ? <div key={item.name} className="space-y-1">
                     <span className="block px-4 py-2 text-sm font-medium text-muted-foreground">
                       {item.name}
                     </span>
-                    {item.children.map(child => <Link key={child.name} to={child.href} className="block px-8 py-2 text-sm text-foreground hover:bg-accent rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                    {item.children.map((child) => <Link key={child.name} to={child.href} className="block px-8 py-2 text-sm text-foreground hover:bg-accent rounded-lg" onClick={() => setMobileMenuOpen(false)}>
                         {child.name}
                       </Link>)}
                   </div> : <Link key={item.name} to={item.href} className={cn("block px-4 py-2 text-sm font-medium rounded-lg", isActive(item.href) ? "text-primary bg-accent" : "text-foreground hover:bg-accent")} onClick={() => setMobileMenuOpen(false)}>
